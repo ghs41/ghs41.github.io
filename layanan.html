@@ -24,8 +24,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/atelier-final.css">
 </head>
-<body>
+<body class="page page-services" data-page="services">
   <a class="skip-link" href="#main">Lewati ke isi utama</a>
 
   <header class="site-header">
@@ -51,7 +52,14 @@
   </header>
 
   <main id="main">
-    <section class="hero section-dark" aria-labelledby="hero-title">
+    <section class="hero section-dark" aria-labelledby="hero-title" data-motion-section="hero" data-section-index="00">
+      <div class="hero-frame" aria-hidden="true">
+        <span class="hero-frame-corner hero-frame-corner-tl"></span>
+        <span class="hero-frame-corner hero-frame-corner-tr"></span>
+        <span class="hero-frame-corner hero-frame-corner-bl"></span>
+        <span class="hero-frame-corner hero-frame-corner-br"></span>
+        <span class="hero-frame-rail"></span>
+      </div>
       <div class="hero-media" aria-hidden="true">
         <img src="assets/images/hero-workshop-premium.jpg" width="1736" height="906" alt="">
       </div>
@@ -103,7 +111,9 @@
       </div>
     </section>
 
-    <section class="section services-section" id="daftar-layanan" aria-labelledby="services-title">
+    <section class="section services-section" id="daftar-layanan" aria-labelledby="services-title" data-motion-section="services" data-section-index="01">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">01</span><span class="section-rail"></span></div>
+      <div class="services-media" aria-hidden="true"><img src="assets/images/hero-workshop-premium.jpg" width="1736" height="906" alt="" loading="lazy"></div>
       <div class="container services-content">
         <div class="services-heading reveal">
           <h2 id="services-title">Perawatan sesuai<br>kebutuhan motor</h2>
@@ -127,7 +137,8 @@
       </aside>
     </section>
 
-    <section class="section booking-section" aria-labelledby="payment-title">
+    <section class="section booking-section" aria-labelledby="payment-title" data-motion-section="payment" data-section-index="02">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">02</span><span class="section-rail"></span></div>
       <div class="container booking-layout">
         <div class="booking-info reveal">
           <h2 id="payment-title">Servis di bengkel.<br>Bayar di bengkel.</h2>
