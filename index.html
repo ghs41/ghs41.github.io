@@ -26,6 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/atelier-final.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -57,7 +58,7 @@
   }
   </script>
 </head>
-<body>
+<body class="page page-home" data-page="home">
   <a class="skip-link" href="#main">Lewati ke isi utama</a>
 
   <header class="site-header" id="beranda">
@@ -83,7 +84,14 @@
   </header>
 
   <main id="main">
-    <section class="hero section-dark" aria-labelledby="hero-title">
+    <section class="hero section-dark" aria-labelledby="hero-title" data-motion-section="hero" data-section-index="00">
+      <div class="hero-frame" aria-hidden="true">
+        <span class="hero-frame-corner hero-frame-corner-tl"></span>
+        <span class="hero-frame-corner hero-frame-corner-tr"></span>
+        <span class="hero-frame-corner hero-frame-corner-bl"></span>
+        <span class="hero-frame-corner hero-frame-corner-br"></span>
+        <span class="hero-frame-rail"></span>
+      </div>
       <div class="hero-media" aria-hidden="true">
         <img src="assets/images/hero-workshop-premium.jpg" width="1736" height="906" alt="">
       </div>
@@ -140,7 +148,8 @@
       </div>
     </section>
 
-    <section class="section packages-section" id="paket" aria-labelledby="packages-title">
+    <section class="section packages-section" id="paket" aria-labelledby="packages-title" data-motion-section="packages" data-section-index="01">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">01</span><span class="section-rail"></span></div>
       <div class="container">
         <div class="section-intro reveal">
           <div>
@@ -181,7 +190,8 @@
       </div>
     </section>
 
-    <section class="section services-section" id="layanan" aria-labelledby="services-title">
+    <section class="section services-section" id="layanan" aria-labelledby="services-title" data-motion-section="services" data-section-index="02">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">02</span><span class="section-rail"></span></div>
       <div class="services-media" aria-hidden="true"><img src="assets/images/hero-workshop-premium.jpg" width="1736" height="906" alt=""></div>
       <div class="container services-content">
         <div class="services-heading reveal">
@@ -239,7 +249,8 @@
       </div>
     </section>
 
-    <section class="section booking-section" id="booking" aria-labelledby="booking-title">
+    <section class="section booking-section" id="booking" aria-labelledby="booking-title" data-motion-section="booking" data-section-index="03">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">03</span><span class="section-rail"></span></div>
       <div class="container booking-layout">
         <div class="booking-info reveal">
           <h2 id="booking-title">Buat estimasi dan kirim booking ke WhatsApp</h2>
@@ -389,7 +400,8 @@
       </div>
     </section>
 
-    <section class="section process-section" id="cara-booking" aria-labelledby="process-title">
+    <section class="section process-section" id="cara-booking" aria-labelledby="process-title" data-motion-section="process" data-section-index="04">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">04</span><span class="section-rail"></span></div>
       <div class="container">
         <h2 class="reveal" id="process-title">Dari booking sampai<br>motor kembali siap jalan</h2>
         <ol class="process-rail">
@@ -401,7 +413,8 @@
       </div>
     </section>
 
-    <section class="section about-section" id="tentang" aria-labelledby="about-title">
+    <section class="section about-section" id="tentang" aria-labelledby="about-title" data-motion-section="about" data-section-index="05">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">05</span><span class="section-rail"></span></div>
       <div class="container about-layout">
         <div class="about-copy reveal">
           <h2 id="about-title">Bengkel yang jelas prosesnya, santuy pelayanannya</h2>
@@ -420,7 +433,8 @@
       </div>
     </section>
 
-    <section class="section location-section" id="lokasi" aria-labelledby="location-title">
+    <section class="section location-section" id="lokasi" aria-labelledby="location-title" data-motion-section="location" data-section-index="06">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">06</span><span class="section-rail"></span></div>
       <div class="container location-layout">
         <div class="location-copy reveal">
           <h2 id="location-title">Temukan GHS 41 di Cijerah</h2>
@@ -440,7 +454,8 @@
       </div>
     </section>
 
-    <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+    <section class="section faq-section" id="faq" aria-labelledby="faq-title" data-motion-section="faq" data-section-index="07">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">07</span><span class="section-rail"></span></div>
       <div class="container">
         <h2 class="reveal" id="faq-title">Pertanyaan yang sering ditanyakan</h2>
         <div class="accordion reveal" id="faq-list">

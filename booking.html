@@ -19,8 +19,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/atelier-final.css">
 </head>
-<body>
+<body class="page page-booking" data-page="booking">
   <a class="skip-link" href="#main">Lewati ke isi utama</a>
   <header class="site-header">
     <div class="container header-inner">
@@ -34,7 +35,14 @@
   </header>
 
   <main id="main">
-    <section class="page-hero page-hero-booking" aria-labelledby="page-title">
+    <section class="page-hero page-hero-booking" aria-labelledby="page-title" data-motion-section="hero" data-section-index="00">
+      <div class="hero-frame" aria-hidden="true">
+        <span class="hero-frame-corner hero-frame-corner-tl"></span>
+        <span class="hero-frame-corner hero-frame-corner-tr"></span>
+        <span class="hero-frame-corner hero-frame-corner-bl"></span>
+        <span class="hero-frame-corner hero-frame-corner-br"></span>
+        <span class="hero-frame-rail"></span>
+      </div>
       <div class="container page-hero-layout">
         <div class="page-hero-copy booking-hero-copy">
           <h1 id="page-title">Booking servis 24 jam.</h1>
@@ -46,7 +54,8 @@
       </div>
     </section>
 
-    <section class="section booking-section" id="booking" aria-labelledby="booking-title">
+    <section class="section booking-section" id="booking" aria-labelledby="booking-title" data-motion-section="booking" data-section-index="01">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">01</span><span class="section-rail"></span></div>
       <div class="container booking-layout">
         <div class="booking-info reveal">
           <h2 id="booking-title">Buat estimasi dan kirim booking ke WhatsApp</h2>
@@ -108,7 +117,8 @@
       </div>
     </section>
 
-    <section class="section process-section" aria-labelledby="process-title">
+    <section class="section process-section" aria-labelledby="process-title" data-motion-section="process" data-section-index="02">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">02</span><span class="section-rail"></span></div>
       <div class="container"><h2 class="reveal" id="process-title">Setelah pesan dikirim, apa berikutnya?</h2><ol class="process-rail"><li class="reveal"><span>01</span><h3>Kirim booking</h3><p>Pesan WhatsApp berisi data motor, layanan, waktu, dan cara penyerahan.</p></li><li class="reveal"><span>02</span><h3>Konfirmasi admin</h3><p>Admin mengonfirmasi slot 24 jam, estimasi biaya, dan durasi sesuai antrean.</p></li><li class="reveal"><span>03</span><h3>Datang atau dijemput</h3><p>Motor dibawa ke bengkel atau dijemput sesuai area dan biaya yang disepakati.</p></li><li class="reveal"><span>04</span><h3>Bayar offline</h3><p>Pembayaran dilakukan langsung sesuai kebijakan bengkel.</p></li></ol></div>
     </section>
   </main>

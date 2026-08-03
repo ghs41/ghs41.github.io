@@ -48,7 +48,7 @@ Jam operasional **24 jam**. Pelanggan tetap disarankan mengonfirmasi antrean dan
 
 Instagram dan TikTok belum ditautkan. Foto galeri bengkel serta testimoni pelanggan asli juga belum tersedia, sehingga website tidak menampilkan konten pengganti atau ulasan buatan.
 
-Konfigurasi kontak utama berada di `assets/js/app.js`, sedangkan nomor tujuan pesan booking juga digunakan oleh `assets/js/booking.js`. Sistem motion premium (ticker racing, progress scroll, parallax, reveal, dan interaksi kartu) berada di `assets/js/motion.js`; seluruh efek menghormati preferensi `prefers-reduced-motion`.
+Konfigurasi kontak utama berada di `assets/js/app.js`, sedangkan nomor tujuan pesan booking juga digunakan oleh `assets/js/booking.js`. Fondasi visual berada di `assets/css/style.css` dan kalibrasi cascade premium berada di `assets/css/atelier-final.css`. Sistem motion premium (progress scroll, spotlight, mask reveal, count-up, parallax, dan interaksi CTA) berada di `assets/js/motion.js`; seluruh efek menghormati preferensi `prefers-reduced-motion`.
 
 ## Katalog JSON
 

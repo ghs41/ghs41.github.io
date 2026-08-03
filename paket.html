@@ -24,8 +24,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/atelier-final.css">
 </head>
-<body>
+<body class="page page-packages" data-page="packages">
   <a class="skip-link" href="#main">Lewati ke isi utama</a>
 
   <header class="site-header">
@@ -51,7 +52,14 @@
   </header>
 
   <main id="main">
-    <section class="hero section-dark" aria-labelledby="hero-title">
+    <section class="hero section-dark" aria-labelledby="hero-title" data-motion-section="hero" data-section-index="00">
+      <div class="hero-frame" aria-hidden="true">
+        <span class="hero-frame-corner hero-frame-corner-tl"></span>
+        <span class="hero-frame-corner hero-frame-corner-tr"></span>
+        <span class="hero-frame-corner hero-frame-corner-bl"></span>
+        <span class="hero-frame-corner hero-frame-corner-br"></span>
+        <span class="hero-frame-rail"></span>
+      </div>
       <div class="hero-media" aria-hidden="true">
         <img src="assets/images/hero-workshop-premium.jpg" width="1736" height="906" alt="">
       </div>
@@ -103,7 +111,8 @@
       </div>
     </section>
 
-    <section class="section packages-section" id="daftar-paket" aria-labelledby="packages-title">
+    <section class="section packages-section" id="daftar-paket" aria-labelledby="packages-title" data-motion-section="packages" data-section-index="01">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">01</span><span class="section-rail"></span></div>
       <div class="container">
         <div class="section-intro reveal">
           <div>
@@ -136,7 +145,8 @@
       </div>
     </section>
 
-    <section class="section booking-section" id="ketentuan-paket" aria-labelledby="terms-title">
+    <section class="section booking-section" id="ketentuan-paket" aria-labelledby="terms-title" data-motion-section="terms" data-section-index="02">
+      <div class="section-chrome" aria-hidden="true"><span class="section-index">02</span><span class="section-rail"></span></div>
       <div class="container booking-layout">
         <div class="booking-info reveal">
           <h2 id="terms-title">Ketentuan<br>paket</h2>
@@ -184,7 +194,7 @@
       </div>
     </section>
 
-    <section class="section-bridge" aria-label="Lanjutkan ke booking servis">
+    <section class="section-bridge" aria-label="Lanjutkan ke booking servis" data-motion-section="cta" data-section-index="03">
       <div class="container">
         <div>
           <strong>Sudah menemukan paket yang cocok?</strong>
