@@ -1,0 +1,198 @@
+{
+  "notes": [
+    "Harga ganti oli sudah termasuk jasa apabila tidak memerlukan pembongkaran tambahan.",
+    "Harga layanan tambahan dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan."
+  ],
+  "services": [
+    {
+      "id": "gulf-standard-scooter-10w40",
+      "group": "Oli Mesin Gulf",
+      "kind": "product",
+      "name": "Gulf Standard Scooter Matic 800 ml 10W-40",
+      "description": "Harga sudah termasuk jasa ganti oli apabila tidak memerlukan pembongkaran tambahan.",
+      "price": 69000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "gulf-standard-scooter-20w50",
+      "group": "Oli Mesin Gulf",
+      "kind": "product",
+      "name": "Gulf Standard Scooter Matic 800 ml 20W-50",
+      "description": "Harga sudah termasuk jasa ganti oli apabila tidak memerlukan pembongkaran tambahan.",
+      "price": 69000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "gulf-premium-scooter-10w40",
+      "group": "Oli Mesin Gulf",
+      "kind": "product",
+      "name": "Gulf Premium Scooter Matic 800 ml 10W-40",
+      "description": "Harga sudah termasuk jasa ganti oli apabila tidak memerlukan pembongkaran tambahan.",
+      "price": 89000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "gulf-standard-manual-20w50",
+      "group": "Oli Mesin Gulf",
+      "kind": "product",
+      "name": "Gulf Standard Manual 1 liter 20W-50",
+      "description": "Harga sudah termasuk jasa ganti oli apabila tidak memerlukan pembongkaran tambahan.",
+      "price": 79000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "gulf-premium-manual-10w40",
+      "group": "Oli Mesin Gulf",
+      "kind": "product",
+      "name": "Gulf Premium Manual 1 liter 10W-40",
+      "description": "Harga sudah termasuk jasa ganti oli apabila tidak memerlukan pembongkaran tambahan.",
+      "price": 109000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "oli-gardan-standar",
+      "group": "Oli Gardan dan Busi",
+      "kind": "product",
+      "name": "Oli gardan standar",
+      "description": "Harga eceran oli gardan standar.",
+      "price": 18000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "oli-gardan-dalam-paket",
+      "group": "Oli Gardan dan Busi",
+      "kind": "package-component",
+      "name": "Oli gardan dalam paket servis",
+      "description": "Harga komponen oli gardan di dalam paket servis.",
+      "price": 15000,
+      "startingFrom": false,
+      "bookable": false
+    },
+    {
+      "id": "busi-ngk-pendek-retail",
+      "group": "Oli Gardan dan Busi",
+      "kind": "product",
+      "name": "Busi NGK standar drat pendek",
+      "description": "Harga eceran busi NGK standar drat pendek.",
+      "price": 30000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "busi-ngk-panjang-retail",
+      "group": "Oli Gardan dan Busi",
+      "kind": "product",
+      "name": "Busi NGK standar drat panjang",
+      "description": "Harga eceran busi NGK standar drat panjang.",
+      "price": 32000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "tambah-oli-gardan",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Tambah oli gardan di luar paket",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 18000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "ganti-busi-ngk-pendek",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Ganti busi NGK drat pendek",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 30000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "ganti-busi-ngk-panjang",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Ganti busi NGK drat panjang",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 32000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "bersihkan-setel-rantai",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Pembersihan dan setel rantai",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 25000,
+      "startingFrom": true,
+      "bookable": true
+    },
+    {
+      "id": "pembersihan-cvt",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Pembersihan CVT saja",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 75000,
+      "startingFrom": true,
+      "bookable": true
+    },
+    {
+      "id": "pembersihan-throttle-body",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Pembersihan throttle body",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 50000,
+      "startingFrom": true,
+      "bookable": true
+    },
+    {
+      "id": "scan-injeksi",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Scan sistem injeksi",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 25000,
+      "startingFrom": true,
+      "bookable": true
+    },
+    {
+      "id": "periksa-aki-pengisian",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Pemeriksaan aki dan pengisian",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 15000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "periksa-keselamatan",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Pemeriksaan keselamatan motor",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 20000,
+      "startingFrom": false,
+      "bookable": true
+    },
+    {
+      "id": "cuci-motor-ringan",
+      "group": "Tambahan Layanan",
+      "kind": "service",
+      "name": "Cuci motor ringan",
+      "description": "Harga dapat berubah apabila ditemukan kerusakan atau diperlukan pembongkaran tambahan.",
+      "price": 20000,
+      "startingFrom": true,
+      "bookable": true
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# GHS 41 — website statis publik
+User-agent: *
+Allow: /
+Disallow:
+
+Sitemap: https://ghs41.github.io/sitemap.xml

@@ -1,0 +1,45 @@
+{
+  "id": "./",
+  "name": "GHS 41 — Aman, Enjoy, Santuy",
+  "short_name": "GHS 41",
+  "description": "Katalog paket dan layanan bengkel motor GHS 41 dengan booking WhatsApp dan pembayaran langsung di bengkel.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0b0c0d",
+  "theme_color": "#0b0c0d",
+  "lang": "id-ID",
+  "dir": "ltr",
+  "categories": ["automotive", "business"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/images/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Lihat Paket Servis",
+      "short_name": "Paket",
+      "description": "Buka katalog paket servis GHS 41.",
+      "url": "./paket.html"
+    },
+    {
+      "name": "Booking Servis",
+      "short_name": "Booking",
+      "description": "Isi data motor dan kirim booking melalui WhatsApp.",
+      "url": "./booking.html"
+    },
+    {
+      "name": "Kontak & Lokasi",
+      "short_name": "Kontak",
+      "description": "Hubungi admin dan buka petunjuk lokasi GHS 41.",
+      "url": "./kontak.html"
+    }
+  ]
+}
