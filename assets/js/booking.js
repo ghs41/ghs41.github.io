@@ -15,11 +15,16 @@
   const estimateLabel = document.querySelector('#estimate-label');
   const formError = document.querySelector('#form-error');
   const dateInput = form?.elements.namedItem('date') || document.querySelector('#booking-date');
+  const arrivalModeSelect = form?.elements.namedItem('arrivalMode') || null;
+  const pickupAddressField = document.querySelector('#pickup-address-field');
+  const pickupAddressInput = form?.elements.namedItem('pickupAddress') || null;
+  const modificationLevelSelect = form?.elements.namedItem('modificationLevel') || null;
   const localToday = getLocalDateString();
   let pendingSelection = getRequestedSelection();
 
   ensureBookingHooks();
   if (dateInput instanceof HTMLInputElement) dateInput.min = localToday;
+  syncArrivalFields();
 
   function getLocalDateString() {
     const now = new Date();
@@ -30,6 +35,30 @@
     const requested = new URLSearchParams(window.location.search).get('package')?.trim() || '';
     if (!requested) return '';
     return requested.includes(':') ? requested : `package:${requested}`;
+  }
+
+  function syncArrivalFields() {
+    const usesPickup = elementValue(arrivalModeSelect) === 'pickup';
+    if (pickupAddressField instanceof HTMLElement) pickupAddressField.hidden = !usesPickup;
+    if (pickupAddressInput instanceof HTMLTextAreaElement || pickupAddressInput instanceof HTMLInputElement) {
+      pickupAddressInput.disabled = !usesPickup;
+      pickupAddressInput.required = usesPickup;
+      if (!usesPickup) clearInvalidState(pickupAddressInput);
+    }
+    return usesPickup;
+  }
+
+  function getModificationLevel() {
+    return elementValue(modificationLevelSelect);
+  }
+
+  function modificationLabel(value) {
+    return {
+      standard: 'Standar / tanpa modifikasi',
+      light: 'Modifikasi ringan',
+      performance: 'Modifikasi performa',
+      heavy: 'Spekan berat / kompetisi'
+    }[value] || value;
   }
 
   function ensureSelectHook(id, name, labelText, placeholder, afterElement) {
@@ -218,6 +247,7 @@
     if (!packageSelect) return null;
     const selection = catalog?.getSelection?.(packageSelect.value) || null;
     const pricing = getPricing(selection, catalog);
+    const modificationLevel = getModificationLevel();
     let totalText = 'Rp0';
     let labelText = 'Pilih paket atau layanan';
     let breakdownText = 'Belum ada rincian harga.';
@@ -233,8 +263,17 @@
           ? ` + ${pricing.addon.label} ${formatRupiah(pricing.addon.price)}`
           : '';
         breakdownText = `${pricing.oilTier.label}: ${displayEstimate(pricing.basePrice, pricing.startingFrom)}${addonText}`;
+        if (modificationLevel === 'performance') {
+          breakdownText = `Referensi paket dasar — ${breakdownText}. Pekerjaan modifikasi dihitung setelah pemeriksaan.`;
+        } else if (modificationLevel === 'heavy') {
+          totalText = 'Perlu pemeriksaan';
+          breakdownText = 'Motor spekan berat/kompetisi tidak memakai harga paket reguler. Admin akan mengonfirmasi biaya setelah pemeriksaan.';
+        }
       } else {
         breakdownText = `${selection.kind}: ${displayEstimate(pricing.basePrice, pricing.startingFrom)}`;
+        if (['performance', 'heavy'].includes(modificationLevel)) {
+          breakdownText += ' Biaya pengerjaan lanjutan dikonfirmasi setelah pemeriksaan motor modifikasi.';
+        }
       }
     }
 
@@ -264,6 +303,8 @@
   });
   oilTierSelect?.addEventListener('change', () => updateEstimate());
   sparkPlugAddonSelect?.addEventListener('change', () => updateEstimate());
+  modificationLevelSelect?.addEventListener('change', () => updateEstimate());
+  arrivalModeSelect?.addEventListener('change', syncArrivalFields);
 
   function clearInvalidState(field) {
     if (!(field instanceof HTMLElement)) return;
@@ -290,8 +331,60 @@
     return null;
   }
 
+  function normalizeComparable(value) {
+    return String(value || '')
+      .trim()
+      .toLocaleLowerCase('id-ID')
+      .replace(/[–—]/g, '-')
+      .replace(/\s+/g, ' ');
+  }
+
+  function motorTypeGroup(value) {
+    const normalized = normalizeComparable(value);
+    if (normalized.includes('modifikasi') || normalized.includes('spekan')) return 'modification';
+    if (normalized.includes('fairing')) return 'sport-fairing';
+    if (normalized.includes('touring') || normalized.includes('adventure')) return 'sport-touring';
+    if (normalized.includes('trail') || normalized.includes('supermoto')) return 'trail-supermoto';
+    if (normalized.includes('sport') && normalized.includes('naked')) return 'sport-naked';
+    if (normalized.includes('matic')) return 'matic';
+    if (normalized.includes('bebek') || normalized.includes('manual')) return 'manual';
+    if (normalized.includes('sport')) return 'sport-generic';
+    return normalized;
+  }
+
+  function selectedMotorTypeGroup(selected) {
+    const identity = normalizeComparable([
+      selected?.name,
+      selected?.title,
+      selected?.type,
+      ...(Array.isArray(selected?.categories) ? selected.categories : [])
+    ].filter(Boolean).join(' '));
+    const specificGroup = motorTypeGroup(identity);
+    if (specificGroup) return specificGroup;
+    return motorTypeGroup(selected?.transmission);
+  }
+
+  function motorTypesMatch(selectedGroup, motorGroup) {
+    if (!selectedGroup || motorGroup === 'modification') return true;
+    if (selectedGroup === motorGroup) return true;
+    return selectedGroup === 'sport-generic' && motorGroup.startsWith('sport-');
+  }
+
+  function parseCapacityRange(value) {
+    const numbers = String(value || '').match(/\d+/g)?.map(Number).filter(Number.isFinite) || [];
+    if (!numbers.length) return null;
+    return { minimum: numbers[0], maximum: numbers[1] ?? numbers[0] };
+  }
+
+  function mismatchResult(message, selectionField, dataField) {
+    markInvalid(selectionField);
+    markInvalid(dataField);
+    return { message, firstInvalid: selectionField || dataField };
+  }
+
   function validateForm(catalog) {
     if (!form) return { message: '', firstInvalid: null };
+    syncArrivalFields();
     form.querySelectorAll('.invalid, [aria-invalid="true"]').forEach(clearInvalidState);
     const invalidFields = [];
 
@@ -321,9 +414,9 @@
     if (yearField && yearValue) {
       const year = Number(yearValue);
       const maximumYear = new Date().getFullYear() + 1;
-      if (!/^\d{4}$/.test(yearValue) || year < 1950 || year > maximumYear) {
+      if (!/^\d{4}$/.test(yearValue) || year < 1980 || year > maximumYear) {
         markInvalid(yearField);
-        return { message: `Tahun motor harus antara 1950 dan ${maximumYear}.`, firstInvalid: yearField };
+        return { message: `Tahun motor harus antara 1980 dan ${maximumYear}.`, firstInvalid: yearField };
       }
     }
 
@@ -331,6 +424,13 @@
     if (odometerField && elementValue(odometerField) && Number(elementValue(odometerField)) < 0) {
       markInvalid(odometerField);
       return { message: 'Kilometer kendaraan tidak boleh bernilai negatif.', firstInvalid: odometerField };
+    }
+
+    const capacityField = namedField('cc', 'capacity');
+    const capacity = Number(elementValue(capacityField));
+    if (capacityField && (!Number.isInteger(capacity) || capacity < 50 || capacity > 250)) {
+      markInvalid(capacityField);
+      return { message: 'Kapasitas mesin harus berupa angka dari 50 sampai 250 cc.', firstInvalid: capacityField };
     }
 
     const bookingDateField = namedField('date');
@@ -351,6 +451,39 @@
       return { message: 'Pilih jenis oli Gulf Standard atau Premium.', firstInvalid: oilTierSelect };
     }
 
+    if (selected.typeKey === 'package') {
+      const customerTypeField = namedField('customerType', 'customer_type');
+      const selectedCustomerType = normalizeComparable(selected.customerType);
+      const customerType = normalizeComparable(elementValue(customerTypeField));
+      if (['ojol', 'non-ojol'].includes(selectedCustomerType) && selectedCustomerType !== customerType) {
+        return mismatchResult(
+          `Paket ini khusus pelanggan ${selected.customerType}. Pilih paket ${elementValue(customerTypeField)} atau ubah jenis pelanggan.`,
+          selectionField,
+          customerTypeField
+        );
+      }
+
+      const motorTypeField = namedField('motorType', 'motor_type');
+      const motorGroup = motorTypeGroup(elementValue(motorTypeField));
+      const selectedCapacity = parseCapacityRange(selected.capacity);
+      if (selectedCapacity && (capacity < selectedCapacity.minimum || capacity > selectedCapacity.maximum)) {
+        return mismatchResult(
+          `Paket ini untuk ${selected.capacity}, sedangkan motor Anda ${capacity} cc. Pilih paket dengan rentang kapasitas yang sesuai.`,
+          selectionField,
+          capacityField
+        );
+      }
+
+      const selectedMotorGroup = selectedMotorTypeGroup(selected);
+      if (!motorTypesMatch(selectedMotorGroup, motorGroup)) {
+        return mismatchResult(
+          `Paket ${selected.name} tidak sesuai dengan jenis motor ${elementValue(motorTypeField)}. Pilih paket dengan kategori motor yang sama.`,
+          selectionField,
+          motorTypeField
+        );
+      }
+    }
+
     const nativeInvalid = [...form.elements].find((field) => (
       field instanceof HTMLElement && !field.matches(':disabled') && 'checkValidity' in field && !field.checkValidity()
     ));
@@ -368,6 +501,10 @@
     return new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(date);
   }
 
+  function formatTime(timeString) {
+    return String(timeString || '').replace(':', '.');
+  }
+
   function formValue(data, ...names) {
     for (const name of names) {
       const value = data.get(name);
@@ -382,6 +519,11 @@
     const year = formValue(data, 'year', 'motorYear');
     const plate = formValue(data, 'plate', 'licensePlate');
     const odometer = formValue(data, 'odometer', 'kilometer');
+    const modificationLevel = formValue(data, 'modificationLevel');
+    const arrivalMode = formValue(data, 'arrivalMode');
+    const usesPickup = arrivalMode === 'pickup';
+    const arrivalLabel = usesPickup ? 'Antar-jemput motor' : 'Datang langsung ke bengkel';
+    const scheduleLabel = usesPickup ? 'Rencana penjemputan' : 'Rencana kedatangan';
     const lines = [
       `Halo ${WORKSHOP_NAME}, saya ingin booking servis.`,
       '',
@@ -389,11 +531,12 @@
       `Nomor WhatsApp: ${formValue(data, 'phone', 'whatsapp')}`,
       `Jenis pelanggan: ${formValue(data, 'customerType', 'customer_type')}`,
       `Kendaraan: ${vehicle}`,
-      `Jenis motor: ${formValue(data, 'motorType', 'motor_type')}`
+      `Jenis motor: ${formValue(data, 'motorType', 'motor_type')}`,
+      `Kondisi modifikasi: ${modificationLabel(modificationLevel)}`
     ];
 
     if (year) lines.push(`Tahun motor: ${year}`);
-    lines.push(`Kapasitas mesin: ${formValue(data, 'cc', 'capacity')}`);
+    lines.push(`Kapasitas mesin: ${formValue(data, 'cc', 'capacity')} cc`);
     if (plate) lines.push(`Nomor polisi: ${plate.toUpperCase()}`);
     if (odometer) lines.push(`Kilometer: ${Number(odometer).toLocaleString('id-ID')} km`);
 
@@ -407,12 +550,33 @@
       lines.push(`Layanan: ${selection.name}`);
     }
 
+    if (selection.typeKey === 'package' && modificationLevel === 'heavy') {
+      lines.push('Status harga: Berdasarkan pemeriksaan; paket reguler tidak berlaku otomatis untuk spekan berat/kompetisi.');
+    } else if (selection.typeKey === 'package' && modificationLevel === 'performance') {
+      lines.push(
+        `Referensi paket dasar: ${displayEstimate(pricing.total, pricing.startingFrom)}`,
+        'Pekerjaan tambahan modifikasi: Dihitung setelah pemeriksaan dan wajib mendapat persetujuan.'
+      );
+    } else {
+      lines.push(`Estimasi website: ${displayEstimate(pricing.total, pricing.startingFrom)}`);
+    }
+    if (modificationLevel === 'light') {
+      lines.push('Catatan modifikasi: Modifikasi ringan tidak otomatis dikenakan biaya tambahan; pembongkaran khusus tetap dikonfirmasi.');
+    } else if (selection.typeKey === 'service' && ['performance', 'heavy'].includes(modificationLevel)) {
+      lines.push('Catatan modifikasi: Biaya pengerjaan lanjutan ditentukan setelah pemeriksaan dan persetujuan.');
+    }
+
     lines.push(
-      `Estimasi website: ${displayEstimate(pricing.total, pricing.startingFrom)}`,
-      `Keluhan: ${formValue(data, 'complaint', 'notes') || '-'}`,
-      `Rencana kedatangan: ${formatDate(formValue(data, 'date'))}, pukul ${formValue(data, 'time')}`,
+      `Keluhan: ${formValue(data, 'complaint', 'notes')}`,
+      `Cara penyerahan: ${arrivalLabel}`
+    );
+    if (usesPickup) lines.push(`Alamat antar-jemput: ${formValue(data, 'pickupAddress')}`);
+    lines.push(
+      `${scheduleLabel}: ${formatDate(formValue(data, 'date'))}, pukul ${formatTime(formValue(data, 'time'))}`,
+      'Estimasi durasi: Menyesuaikan antrean dan hasil pemeriksaan motor.',
       '',
-      'Mohon konfirmasi jadwal dan estimasi biaya akhirnya.',
+      'GHS 41 buka 24 jam. Mohon konfirmasi slot, estimasi biaya akhir, dan durasi pengerjaan.',
+      ...(usesPickup ? ['Mohon konfirmasi juga ketersediaan area dan biaya antar-jemput.'] : []),
       'Saya memahami pembayaran dilakukan langsung di bengkel dan tidak melalui website. Terima kasih.'
     );
     return lines.join('\n');

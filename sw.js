@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'ghs41-';
-const CACHE_VERSION = 'static-2026-08-04-v3';
+const CACHE_VERSION = 'static-2026-08-04-v4';
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`;
 const OFFLINE_FALLBACK = './404.html';
 
@@ -24,8 +24,6 @@ const PRECACHE_URLS = Object.freeze([
   './data/services.json',
   './data/testimonials.json',
   './assets/images/favicon.png',
-  './assets/images/logo-ghs41.webp',
-  './assets/images/logo-ghs41.png',
   './assets/images/logo-ghs41-optimized.png',
   './assets/images/hero-workshop-premium.jpg',
   './assets/images/booking-workshop-premium.jpg',

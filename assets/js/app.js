@@ -58,32 +58,94 @@
 
     if (!navigation) return;
 
-    function setNavigation(open, { restoreFocus = false } = {}) {
+    const desktopQuery = window.matchMedia('(min-width: 921px)');
+    const header = toggle.closest('.site-header');
+    let inertTargets = [];
+
+    function setBackgroundInert(inert) {
+      if (inert) {
+        inertTargets = [
+          header?.querySelector('.brand'),
+          ...Array.from(body?.children || []).filter((element) => (
+            element !== header && !element.matches('script, style')
+          ))
+        ].filter(Boolean).map((element) => ({
+          element,
+          wasInert: element.hasAttribute('inert')
+        }));
+
+        inertTargets.forEach(({ element }) => element.setAttribute('inert', ''));
+        return;
+      }
+
+      inertTargets.forEach(({ element, wasInert }) => {
+        if (!wasInert) element.removeAttribute('inert');
+      });
+      inertTargets = [];
+    }
+
+    function getFocusableElements() {
+      return [
+        toggle,
+        ...navigation.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+      ].filter((element) => !element.hasAttribute('disabled') && element.getClientRects().length > 0);
+    }
+
+    function setNavigation(open, { restoreFocus = false, moveFocus = false } = {}) {
+      const mobileOpen = open && !desktopQuery.matches;
+
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Tutup menu navigasi' : 'Buka menu navigasi');
       navigation.classList.toggle('open', open);
-      body?.classList.toggle('nav-open', open);
+      body?.classList.toggle('nav-open', mobileOpen);
+      setBackgroundInert(mobileOpen);
 
-      if (restoreFocus) toggle.focus();
+      if (mobileOpen && moveFocus) {
+        navigation.scrollTop = 0;
+        window.requestAnimationFrame(() => navigation.querySelector('a[href]')?.focus({ preventScroll: true }));
+      }
+
+      if (restoreFocus) toggle.focus({ preventScroll: true });
     }
 
     setNavigation(false);
 
     toggle.addEventListener('click', () => {
-      setNavigation(toggle.getAttribute('aria-expanded') !== 'true');
+      const willOpen = toggle.getAttribute('aria-expanded') !== 'true';
+      setNavigation(willOpen, { moveFocus: willOpen });
     });
 
     navigation.addEventListener('click', (event) => {
-      if (event.target.closest('a')) setNavigation(false);
+      const link = event.target.closest('a');
+      if (link) setNavigation(false, { restoreFocus: link.target === '_blank' });
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      if (event.key === 'Escape' && isOpen) {
         setNavigation(false, { restoreFocus: true });
+        return;
+      }
+
+      if (event.key !== 'Tab' || !isOpen || desktopQuery.matches) return;
+
+      const focusableElements = getFocusableElements();
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (!firstElement || !lastElement) return;
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      } else if (!focusableElements.includes(document.activeElement)) {
+        event.preventDefault();
+        firstElement.focus();
       }
     });
 
-    const desktopQuery = window.matchMedia('(min-width: 921px)');
     const closeOnDesktop = (event) => {
       if (event.matches) setNavigation(false);
     };
@@ -160,9 +222,8 @@
     const floatingBooking = document.querySelector('#floating-wa');
     if (!floatingBooking) return;
 
-    const bookingSection = document.querySelector('#booking')
-      || document.querySelector('#booking-form')?.closest('.booking-section, section');
-    if (!bookingSection) {
+    const bookingTarget = document.querySelector('#booking-form') || document.querySelector('#booking');
+    if (!bookingTarget) {
       floatingBooking.href = whatsappUrl(
         `Halo ${CONFIG.workshopName}, saya ingin booking servis motor. Mohon informasi jadwal yang tersedia.`
       );
@@ -172,10 +233,10 @@
       return;
     }
 
-    floatingBooking.href = '#booking';
+    floatingBooking.href = `#${bookingTarget.id}`;
     floatingBooking.addEventListener('click', (event) => {
       event.preventDefault();
-      bookingSection.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      bookingTarget.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
     });
   }
 
