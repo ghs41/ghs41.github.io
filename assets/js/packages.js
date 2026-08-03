@@ -7,15 +7,35 @@
     : new URL('data/', document.baseURI);
   const packageGrid = document.querySelector('#package-grid');
   const serviceList = document.querySelector('#service-list');
+  const catalogDetails = Object.freeze({
+    priceValidity: document.querySelector('#catalog-price-validity'),
+    oilUpgrades: document.querySelector('#oil-upgrade-list'),
+    oilNotes: document.querySelector('#oil-upgrade-notes'),
+    sparkAddons: document.querySelector('#spark-addon-list'),
+    sparkNote: document.querySelector('#spark-addon-note'),
+    terms: document.querySelector('#package-terms-list'),
+    modificationRegular: document.querySelector('#modification-regular-note'),
+    modifications: document.querySelector('#modification-guidance'),
+    excludedParts: document.querySelector('#excluded-parts-list'),
+    customerNotice: document.querySelector('#catalog-customer-notice')
+  });
   const catalog = window.GHS41Catalog || {};
   const fallbackPackages = readPackageFallback();
   const fallbackServices = readServiceFallback();
   let packages = freezeList(fallbackPackages);
   let services = freezeList(fallbackServices);
   let oilTiers = Object.freeze([]);
+  let oilPremiumUpgrades = Object.freeze([]);
   let sparkPlugAddons = Object.freeze([]);
   let terms = Object.freeze([]);
   let excludedParts = Object.freeze([]);
+  let durationPolicy = '';
+  let priceValidity = '';
+  let priceLabel = '';
+  let customerNotice = '';
+  let modificationGuidance = Object.freeze({});
+  let oilUpgradeNotes = Object.freeze([]);
+  let sparkPlugNote = '';
   let activeFilter = getInitialFilter();
 
   function cleanString(value) {
@@ -27,6 +47,7 @@
       ...item,
       ...(item.categories ? { categories: Object.freeze([...item.categories]) } : {}),
       ...(item.includes ? { includes: Object.freeze([...item.includes]) } : {}),
+      ...(item.examples ? { examples: Object.freeze([...item.examples]) } : {}),
       ...(item.notes ? { notes: Object.freeze([...item.notes]) } : {}),
       ...(item.prices ? { prices: Object.freeze({ ...item.prices }) } : {})
     })));
@@ -41,7 +62,7 @@
     return items;
   }
 
-  function normalisePackage(item, index) {
+  function normalisePackage(item, index, defaultDuration = '') {
     if (!item || typeof item !== 'object') {
       throw new TypeError(`Paket ke-${index + 1} bukan objek yang valid.`);
     }
@@ -60,6 +81,7 @@
       ? item.includes.map(cleanString).filter(Boolean)
       : [];
     const notes = Array.isArray(item.notes) ? item.notes.map(cleanString).filter(Boolean) : [];
+    const examples = Array.isArray(item.examples) ? item.examples.map(cleanString).filter(Boolean) : [];
 
     if (!id || !name || !type || !capacity) {
       throw new TypeError(`Data utama paket ke-${index + 1} tidak lengkap.`);
@@ -84,7 +106,9 @@
       price: standardPrice,
       startingFrom: Boolean(item.startingFrom),
       warrantyDays: Number(item.warrantyDays) || 0,
+      duration: cleanString(item.duration) || defaultDuration,
       eligibility: cleanString(item.eligibility),
+      examples,
       notes,
       includes
     };
@@ -147,9 +171,19 @@
       throw new TypeError('packages.json harus memiliki array packages yang tidak kosong.');
     }
 
-    const loadedPackages = ensureUniqueIds(payload.packages.map(normalisePackage), 'paket');
+    const loadedDurationPolicy = cleanString(payload.durationPolicy);
+    const loadedPriceValidity = cleanString(payload.priceValidity);
+    const includeSets = payload.includeSets && typeof payload.includeSets === 'object' ? payload.includeSets : {};
+    const loadedPackages = ensureUniqueIds(
+      payload.packages.map((item, index) => normalisePackage({
+        ...item,
+        includes: Array.isArray(item.includes) ? item.includes : includeSets[cleanString(item.includeSet)]
+      }, index, loadedDurationPolicy)),
+      'paket'
+    );
     const loadedTiers = ensureUniqueIds((payload.oilTiers || []).map(normaliseOilTier), 'tier oli');
     const loadedAddons = ensureUniqueIds((payload.sparkPlugAddons || []).map(normaliseAddon), 'add-on busi');
+    const loadedOilUpgrades = ensureUniqueIds((payload.oilPremiumUpgrades || []).map(normaliseAddon), 'upgrade oli premium');
 
     if (!loadedTiers.some((item) => item.id === 'standard') || !loadedTiers.some((item) => item.id === 'premium')) {
       throw new TypeError('Tier oli Standard dan Premium wajib tersedia.');
@@ -158,9 +192,17 @@
     return {
       items: freezeList(loadedPackages),
       oilTiers: Object.freeze(loadedTiers),
+      oilPremiumUpgrades: Object.freeze(loadedOilUpgrades),
       sparkPlugAddons: Object.freeze(loadedAddons),
       terms: Object.freeze((payload.terms || []).map(cleanString).filter(Boolean)),
-      excludedParts: Object.freeze((payload.excludedParts || []).map(cleanString).filter(Boolean))
+      excludedParts: Object.freeze((payload.excludedParts || []).map(cleanString).filter(Boolean)),
+      durationPolicy: loadedDurationPolicy,
+      priceValidity: loadedPriceValidity,
+      priceLabel: cleanString(payload.priceLabel),
+      customerNotice: cleanString(payload.customerNotice),
+      modificationGuidance: Object.freeze(payload.modificationGuidance && typeof payload.modificationGuidance === 'object' ? payload.modificationGuidance : {}),
+      oilUpgradeNotes: Object.freeze((payload.oilUpgradeNotes || []).map(cleanString).filter(Boolean)),
+      sparkPlugNote: cleanString(payload.sparkPlugNote)
     };
   }
 
@@ -191,7 +233,9 @@
           price: standard,
           startingFrom: card.dataset.startingFrom === 'true',
           warrantyDays: 0,
+          duration: cleanString(card.querySelector('.package-duration')?.textContent),
           eligibility: '',
+          examples: [],
           notes: [],
           includes: [...card.querySelectorAll('li')].map((item) => cleanString(item.textContent)).filter(Boolean)
         };
@@ -236,6 +280,12 @@
     const details = visibleDetails.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('');
     const completeDetails = item.includes.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('');
     const note = [...item.notes, item.eligibility].filter(Boolean).map((text) => `<p>${escapeHtml(text)}</p>`).join('');
+    const examples = item.examples.length
+      ? `<div class="package-terms"><p><strong>Contoh motor:</strong> ${escapeHtml(item.examples.join(', '))}</p></div>`
+      : '';
+    const duration = item.duration
+      ? `<div class="package-terms package-duration"><p><strong>Estimasi durasi:</strong> ${escapeHtml(item.duration)}</p></div>`
+      : '';
 
     return `
       <article class="package-card reveal"
@@ -252,10 +302,12 @@
         <ul>${details}${remaining > 0 ? `<li class="package-more">+ ${remaining} rincian layanan lainnya</li>` : ''}</ul>
         <details class="package-details">
           <summary>Rincian lengkap paket</summary>
+          ${examples}
           <ul>${completeDetails}</ul>
           <div class="package-terms">${note}</div>
         </details>
-        <div class="package-tier-prices" aria-label="Pilihan harga berdasarkan jenis oli">
+        ${duration}
+        <div class="package-tier-prices" role="group" aria-label="Pilihan harga berdasarkan jenis oli">
           <span class="tier-price" data-tier="standard"><small>Gulf Standard</small><strong>${displayPrice(item.prices.standard, item.startingFrom)}</strong></span>
           <span class="tier-price" data-tier="premium"><small>Gulf Premium</small><strong>${displayPrice(item.prices.premium, item.startingFrom)}</strong></span>
         </div>
@@ -286,6 +338,70 @@
       </article>`;
   }
 
+  function catalogOptionTemplate(item) {
+    return `
+      <article class="catalog-option-card">
+        <span>${escapeHtml(item.label)}</span>
+        <strong>${item.price > 0 ? `+Rp${Number(item.price).toLocaleString('id-ID')}` : escapeHtml(item.label)}</strong>
+      </article>`;
+  }
+
+  function modificationTemplate(item) {
+    if (!item || typeof item !== 'object') return '';
+    const examples = Array.isArray(item.examples) && item.examples.length
+      ? `<p><strong>Contoh:</strong> ${escapeHtml(item.examples.join(', '))}</p>`
+      : '';
+    const pricing = cleanString(item.pricing) ? `<p class="catalog-modification-price">${escapeHtml(item.pricing)}</p>` : '';
+    const notes = Array.isArray(item.notes) && item.notes.length
+      ? `<ul>${item.notes.map((note) => `<li>${escapeHtml(note)}</li>`).join('')}</ul>`
+      : '';
+    const exclusions = Array.isArray(item.excludedServices) && item.excludedServices.length
+      ? `<details><summary>Jasa di luar paket reguler</summary><ul>${item.excludedServices.map((service) => `<li>${escapeHtml(service)}</li>`).join('')}</ul></details>`
+      : '';
+
+    return `<article class="catalog-modification-card"><h3>${escapeHtml(item.title || 'Ketentuan modifikasi')}</h3>${pricing}${examples}${notes}${exclusions}</article>`;
+  }
+
+  function renderCatalogDetails() {
+    if (catalogDetails.priceValidity) {
+      catalogDetails.priceValidity.textContent = priceValidity || `${priceLabel || 'Harga'} mengikuti price list terbaru.`;
+    }
+    if (catalogDetails.oilUpgrades) {
+      catalogDetails.oilUpgrades.innerHTML = oilPremiumUpgrades.map(catalogOptionTemplate).join('');
+    }
+    if (catalogDetails.oilNotes) {
+      catalogDetails.oilNotes.innerHTML = oilUpgradeNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('');
+    }
+    if (catalogDetails.sparkAddons) {
+      catalogDetails.sparkAddons.innerHTML = sparkPlugAddons.filter((item) => item.price > 0).map(catalogOptionTemplate).join('');
+    }
+    if (catalogDetails.sparkNote) catalogDetails.sparkNote.textContent = sparkPlugNote;
+    if (catalogDetails.terms) {
+      catalogDetails.terms.innerHTML = terms.map((term) => `<li>${escapeHtml(term)}</li>`).join('');
+    }
+    if (catalogDetails.modificationRegular) {
+      catalogDetails.modificationRegular.textContent = cleanString(modificationGuidance.regular);
+    }
+    if (catalogDetails.modifications) {
+      catalogDetails.modifications.innerHTML = ['light', 'performance', 'competition']
+        .map((key) => modificationTemplate(modificationGuidance[key]))
+        .join('');
+    }
+    if (catalogDetails.excludedParts) {
+      catalogDetails.excludedParts.innerHTML = excludedParts.map((part) => `<li>${escapeHtml(part)}</li>`).join('');
+    }
+    if (catalogDetails.customerNotice) catalogDetails.customerNotice.textContent = customerNotice;
+  }
+
+  function showCatalogDetailsUnavailable() {
+    if (catalogDetails.priceValidity) {
+      catalogDetails.priceValidity.textContent = 'Rincian Harga Launching belum dapat dimuat. Minta price list terbaru melalui WhatsApp.';
+    }
+    [catalogDetails.oilUpgrades, catalogDetails.sparkAddons, catalogDetails.terms, catalogDetails.modifications, catalogDetails.excludedParts]
+      .filter(Boolean)
+      .forEach((container) => container.replaceChildren());
+  }
+
   function renderPackages(items) {
     if (!packageGrid) return;
     packageGrid.innerHTML = items.map(packageTemplate).join('');
@@ -303,9 +419,20 @@
 
   function showLoadError(container, label) {
     if (!container || container.querySelector('.package-card, .service-row')) return;
-    const status = container.querySelector('[data-catalog-status]') || container;
-    status.textContent = `${label} belum dapat dimuat. Muat ulang halaman saat koneksi tersedia.`;
+    const status = document.createElement('div');
+    const message = document.createElement('p');
+    const contactLink = document.createElement('a');
+
+    status.dataset.catalogStatus = '';
     status.setAttribute('role', 'status');
+    message.append(`${label} belum dapat dimuat. `);
+    contactLink.href = 'https://wa.me/6281395546714?text=Halo%20GHS%2041%2C%20saya%20ingin%20meminta%20price%20list%20terbaru.';
+    contactLink.target = '_blank';
+    contactLink.rel = 'noopener noreferrer';
+    contactLink.textContent = 'Minta price list terbaru melalui WhatsApp.';
+    message.append(contactLink);
+    status.append(message);
+    container.replaceChildren(status);
     container.setAttribute('aria-busy', 'false');
   }
 
@@ -384,7 +511,7 @@
     if (chooseButton) selectPackage(chooseButton.dataset.id, chooseButton);
   });
 
-  Object.assign(catalog, { packages, services, oilTiers, sparkPlugAddons, terms, excludedParts, getSelection, filter: applyFilter, selectPackage });
+  Object.assign(catalog, { packages, services, oilTiers, oilPremiumUpgrades, sparkPlugAddons, terms, excludedParts, durationPolicy, priceValidity, priceLabel, customerNotice, modificationGuidance, oilUpgradeNotes, sparkPlugNote, getSelection, filter: applyFilter, selectPackage });
   window.GHS41Catalog = catalog;
   applyFilter(activeFilter, false);
 
@@ -395,15 +522,25 @@
     if (packageResult.status === 'fulfilled') {
       packages = packageResult.value.items;
       oilTiers = packageResult.value.oilTiers;
+      oilPremiumUpgrades = packageResult.value.oilPremiumUpgrades;
       sparkPlugAddons = packageResult.value.sparkPlugAddons;
       terms = packageResult.value.terms;
       excludedParts = packageResult.value.excludedParts;
+      durationPolicy = packageResult.value.durationPolicy;
+      priceValidity = packageResult.value.priceValidity;
+      priceLabel = packageResult.value.priceLabel;
+      customerNotice = packageResult.value.customerNotice;
+      modificationGuidance = packageResult.value.modificationGuidance;
+      oilUpgradeNotes = packageResult.value.oilUpgradeNotes;
+      sparkPlugNote = packageResult.value.sparkPlugNote;
       renderPackages(packages);
+      renderCatalogDetails();
     } else {
       console.warn('Katalog paket JSON tidak dapat dimuat.', packageResult.reason);
       errors.packages = packageResult.reason;
       sources.packages = fallbackPackages.length ? 'html' : 'unavailable';
       showLoadError(packageGrid, 'Katalog paket');
+      showCatalogDetailsUnavailable();
     }
 
     if (serviceResult.status === 'fulfilled') {
@@ -416,8 +553,8 @@
       showLoadError(serviceList, 'Katalog layanan');
     }
 
-    Object.assign(catalog, { packages, services, oilTiers, sparkPlugAddons, terms, excludedParts, sources: Object.freeze(sources) });
-    const detail = { packages, services, oilTiers, sparkPlugAddons, terms, excludedParts, sources: catalog.sources, errors: Object.freeze(errors) };
+    Object.assign(catalog, { packages, services, oilTiers, oilPremiumUpgrades, sparkPlugAddons, terms, excludedParts, durationPolicy, priceValidity, priceLabel, customerNotice, modificationGuidance, oilUpgradeNotes, sparkPlugNote, sources: Object.freeze(sources) });
+    const detail = { packages, services, oilTiers, oilPremiumUpgrades, sparkPlugAddons, terms, excludedParts, durationPolicy, priceValidity, priceLabel, customerNotice, modificationGuidance, oilUpgradeNotes, sparkPlugNote, sources: catalog.sources, errors: Object.freeze(errors) };
     document.dispatchEvent(new CustomEvent('ghs41:catalog-ready', { detail }));
     return detail;
   });

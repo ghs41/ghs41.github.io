@@ -2,7 +2,7 @@
   "id": "./",
   "name": "GHS 41 — Aman, Enjoy, Santuy",
   "short_name": "GHS 41",
-  "description": "Katalog paket dan layanan bengkel motor GHS 41 dengan booking WhatsApp dan pembayaran langsung di bengkel.",
+  "description": "Katalog bengkel motor GHS 41 yang buka 24 jam, menyediakan antar-jemput sesuai konfirmasi, booking WhatsApp, dan pembayaran di bengkel.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

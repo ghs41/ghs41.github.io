@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0c0d">
-  <meta name="description" content="Layanan bengkel GHS 41 untuk kelompok motor 110–125 cc, 126–160 cc, dan 161–250 cc, dengan booking WhatsApp dan pembayaran offline di bengkel.">
+  <meta name="description" content="Layanan bengkel motor GHS 41 tersedia 24 jam untuk 110–250 cc, dengan booking WhatsApp, antar-jemput sesuai konfirmasi, dan pembayaran offline.">
   <meta name="author" content="GHS 41">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="id_ID">
   <meta property="og:site_name" content="GHS 41">
   <meta property="og:title" content="Layanan Bengkel Motor | GHS 41">
-  <meta property="og:description" content="Lihat layanan perawatan motor GHS 41, booking melalui WhatsApp, konfirmasi sebelum pengerjaan, dan bayar langsung di bengkel.">
+  <meta property="og:description" content="Layanan perawatan motor 24 jam, antar-jemput sesuai konfirmasi, booking WhatsApp, dan pembayaran langsung di bengkel.">
   <meta property="og:url" content="https://ghs41.github.io/layanan.html">
   <meta property="og:image" content="https://ghs41.github.io/assets/images/og-cover.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -31,7 +31,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html" aria-label="GHS 41 — kembali ke beranda">
-        <img src="assets/images/logo-ghs41-optimized.png" width="1600" height="289" alt="GHS 41 — Aman, Enjoy, Santuy">
+        <img src="assets/images/logo-ghs41-optimized.png" width="1600" height="289" fetchpriority="high" alt="GHS 41 — Aman, Enjoy, Santuy">
       </a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Buka menu navigasi">
@@ -60,21 +60,21 @@
         <div class="hero-copy reveal">
           <h1 id="hero-title">Rawat yang perlu.<br>Jaga performanya.</h1>
           <div class="speed-rule" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-          <p>Perawatan untuk kelompok 110–125 cc, 126–160 cc, dan 161–250 cc, dari ganti oli hingga pemeriksaan CVT, throttle body, busi, rem, ban, aki, dan kelistrikan.</p>
+          <p>Perawatan 24 jam untuk motor 110–250 cc, dari ganti oli hingga pemeriksaan CVT, throttle body, busi, rem, ban, aki, dan kelistrikan. Durasi mengikuti antrean dan kondisi motor.</p>
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#daftar-layanan">Lihat Layanan <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10h11M11 6l4 4-4 4"/></svg></span></a>
             <a class="btn btn-outline" href="booking.html">Booking Sekarang <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10h11M11 6l4 4-4 4"/></svg></span></a>
           </div>
 
-          <div class="hero-trust" aria-label="Alur layanan GHS 41">
+          <div class="hero-trust" role="group" aria-label="Alur layanan GHS 41">
             <div>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4l2-4 4 8 2-4h4"/><circle cx="12" cy="12" r="9"/></svg>
-              <span>Pemeriksaan awal</span>
+              <span>Buka 24 jam</span>
             </div>
             <div>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3.5v5.8c0 4.4-3.1 7.5-8 8.7-4.9-1.2-8-4.3-8-8.7V6.5L12 3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>
-              <span>Konfirmasi pengerjaan</span>
+              <span>Antar-jemput tersedia</span>
             </div>
             <div>
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
@@ -111,11 +111,12 @@
           <p>Pilih layanan satuan atau full service sesuai kebutuhan motor. Busi baru dan sparepart pengganti tidak termasuk dalam harga paket kecuali dipilih sebagai tambahan.</p>
         </div>
 
-        <div class="service-list" id="service-list" aria-live="polite" aria-label="Daftar layanan bengkel"></div>
-        <noscript><p class="package-note">Aktifkan JavaScript untuk menampilkan daftar layanan dari berkas data GHS 41.</p></noscript>
+        <div class="service-list" id="service-list" role="region" aria-live="polite" aria-label="Daftar layanan bengkel"></div>
+        <noscript><p class="package-note">Aktifkan JavaScript untuk menampilkan daftar layanan, atau minta price list terbaru melalui WhatsApp.</p></noscript>
+        <p class="package-note reveal"><strong>HARGA LAUNCHING</strong> berlaku sampai pembaruan price list berikutnya dan dapat disesuaikan mengikuti harga pasar serta kondisi motor. Durasi pengerjaan mengikuti antrean bengkel dan hasil pemeriksaan.</p>
       </div>
 
-      <div class="section-bridge">
+      <aside class="section-bridge" aria-label="Lanjutkan ke booking pemeriksaan">
         <div class="container">
           <div>
             <strong>Pemeriksaan dulu, keputusan tetap di tanganmu.</strong>
@@ -123,7 +124,7 @@
           </div>
           <a href="booking.html">Booking Pemeriksaan <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10h11M11 6l4 4-4 4"/></svg></span></a>
         </div>
-      </div>
+      </aside>
     </section>
 
     <section class="section booking-section" aria-labelledby="payment-title">
@@ -134,10 +135,10 @@
           <p>Website GHS 41 tidak memproses pembayaran online. Booking hanya membantu menyampaikan kebutuhan motor dan rencana kedatangan kepada admin melalui WhatsApp.</p>
         </div>
 
-        <div class="booking-form reveal" aria-label="Add-on busi, ketentuan pemeriksaan, dan pembayaran">
+        <div class="booking-form reveal" role="region" aria-label="Add-on busi, ketentuan pemeriksaan, dan pembayaran">
           <fieldset>
             <legend><span>01</span> Paket Plus Busi</legend>
-            <div class="service-list" aria-label="Harga add-on busi untuk paket servis">
+            <div class="service-list" role="group" aria-label="Harga add-on busi untuk paket servis">
               <article class="service-row">
                 <span class="service-no">01</span>
                 <h3>NGK standar drat pendek</h3>
@@ -165,7 +166,7 @@
               </div>
               <div>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3.5v5.8c0 4.4-3.1 7.5-8 8.7-4.9-1.2-8-4.3-8-8.7V6.5L12 3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>
-                <p><strong>Estimasi dikonfirmasi</strong><span>Admin atau mekanik mengonfirmasi jadwal dan estimasi biaya sebelum pengerjaan.</span></p>
+                <p><strong>Estimasi dikonfirmasi</strong><span>Admin atau mekanik mengonfirmasi biaya dan durasi berdasarkan antrean serta kondisi motor sebelum pengerjaan.</span></p>
               </div>
             </div>
           </fieldset>
@@ -173,7 +174,7 @@
           <fieldset>
             <legend><span>03</span> Pembayaran offline</legend>
             <p>Pembayaran dilakukan langsung di bengkel sebelum atau setelah pengerjaan, sesuai kebijakan bengkel. Tidak ada pembayaran melalui website.</p>
-            <div class="payment-methods" aria-label="Metode pembayaran di bengkel">
+            <div class="payment-methods" role="group" aria-label="Metode pembayaran di bengkel">
               <span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Tunai</span>
               <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM15 14h2v2h-2zM19 14h1v6h-6v-2"/></svg>QRIS di kasir</span>
               <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18L12 4 3 9ZM5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg>Transfer bank di bengkel</span>
@@ -201,9 +202,9 @@
         <a href="kontak.html">Kontak</a>
       </nav>
       <div class="footer-info">
-        <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3A8.5 8.5 0 1 1 20.5 11.7Z"/><path d="M8 7.8c.3-.6.6-.6.9-.6h.4c.2 0 .4.1.5.4l.7 1.7c.1.3.1.5-.1.7l-.6.8c-.2.2-.1.5.1.8.5.9 1.2 1.6 2.1 2.1.3.2.6.2.8-.1l.7-.9c.2-.3.5-.3.8-.2l1.7.8c.3.1.4.3.4.6 0 .7-.3 1.4-.9 1.8-.5.4-1.2.6-2 .5-1.1-.2-2.6-.8-4.3-2.3-1.3-1.2-2.2-2.7-2.4-3.8-.2-.9 0-1.7.4-2.3Z"/></svg>Booking melalui WhatsApp</p>
-        <p><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Pembayaran langsung di bengkel</p>
-        <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3.5v5.8c0 4.4-3.1 7.5-8 8.7-4.9-1.2-8-4.3-8-8.7V6.5L12 3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Data booking tidak disimpan</p>
+        <p><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Buka 24 jam</p>
+        <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h14l2 3v5H6z"/><path d="M7 9V6H4M7 17a2 2 0 1 0 0 .1M18 17a2 2 0 1 0 0 .1"/></svg>Antar-jemput via konfirmasi</p>
+        <p><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Pembayaran di bengkel</p>
       </div>
       <div class="footer-cta"><a class="btn btn-primary" href="booking.html">Booking Servis <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10h11M11 6l4 4-4 4"/></svg></span></a></div>
     </div>
@@ -213,10 +214,12 @@
     </div>
   </footer>
 
-  <a class="floating-wa" href="booking.html" aria-label="Mulai booking servis melalui WhatsApp">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3A8.5 8.5 0 1 1 20.5 11.7Z"/><path d="M8 7.8c.3-.6.6-.6.9-.6h.4c.2 0 .4.1.5.4l.7 1.7c.1.3.1.5-.1.7l-.6.8c-.2.2-.1.5.1.8.5.9 1.2 1.6 2.1 2.1.3.2.6.2.8-.1l.7-.9c.2-.3.5-.3.8-.2l1.7.8c.3.1.4.3.4.6 0 .7-.3 1.4-.9 1.8-.5.4-1.2.6-2 .5-1.1-.2-2.6-.8-4.3-2.3-1.3-1.2-2.2-2.7-2.4-3.8-.2-.9 0-1.7.4-2.3Z"/></svg>
-    <span>Booking</span>
-  </a>
+  <nav aria-label="Aksi cepat">
+    <a class="floating-wa" href="booking.html" aria-label="Mulai booking servis melalui WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.3-4.3A8.5 8.5 0 1 1 20.5 11.7Z"/><path d="M8 7.8c.3-.6.6-.6.9-.6h.4c.2 0 .4.1.5.4l.7 1.7c.1.3.1.5-.1.7l-.6.8c-.2.2-.1.5.1.8.5.9 1.2 1.6 2.1 2.1.3.2.6.2.8-.1l.7-.9c.2-.3.5-.3.8-.2l1.7.8c.3.1.4.3.4.6 0 .7-.3 1.4-.9 1.8-.5.4-1.2.6-2 .5-1.1-.2-2.6-.8-4.3-2.3-1.3-1.2-2.2-2.7-2.4-3.8-.2-.9 0-1.7.4-2.3Z"/></svg>
+      <span>Booking</span>
+    </a>
+  </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="assets/js/app.js" defer></script>

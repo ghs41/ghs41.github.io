@@ -22,6 +22,8 @@ Website statis resmi **GHS 41 — Aman, Enjoy, Santuy** untuk profil bengkel, ka
 - Filter paket berdasarkan penggunaan, jenis motor, dan kapasitas mesin.
 - Pricelist layanan satuan dan estimasi harga.
 - Form booking yang membuka WhatsApp dengan format pesan otomatis.
+- Bengkel buka 24 jam; antrean dan durasi pengerjaan dikonfirmasi karena mengikuti kondisi motor.
+- Antar-jemput motor tersedia setelah cakupan area, waktu, dan biaya disepakati melalui WhatsApp.
 - Petunjuk lokasi resmi melalui Google Maps.
 - SEO, Open Graph, sitemap, robots.txt, manifest PWA, dan dukungan offline dasar.
 - Tidak menggunakan PHP, backend, database pelanggan, login, atau payment gateway.
@@ -42,7 +44,9 @@ Form tidak mengirim atau menyimpan data pribadi ke GitHub. Data baru diteruskan 
 - Lokasi: **Jalan Raya Cijerah, Cibuntu, Bandung Kulon, Kota Bandung, Jawa Barat 40213**
 - Google Maps: [GHS 41](https://www.google.com/maps/place/GHS41/@-6.917235,107.5681643,17z/data=!3m1!4b1!4m6!3m5!1s0x2e68e57f4f86bb5b:0x88898e3045abe7a5!8m2!3d-6.917235!4d107.5707392!16s%2Fg%2F11jnsh2x7j?hl=id&entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D)
 
-Jam operasional belum dicantumkan dan perlu dikonfirmasi melalui WhatsApp sebelum datang. Nomor jalan tidak dituliskan karena belum tersedia pada informasi lokasi yang diberikan.
+Jam operasional **24 jam**. Pelanggan tetap disarankan mengonfirmasi antrean dan durasi melalui WhatsApp. Layanan antar-jemput motor tersedia dengan cakupan area, waktu, dan biaya yang dikonfirmasi terlebih dahulu. Nomor jalan tidak dituliskan karena belum tersedia pada informasi lokasi yang diberikan.
+
+Instagram dan TikTok belum ditautkan. Foto galeri bengkel serta testimoni pelanggan asli juga belum tersedia, sehingga website tidak menampilkan konten pengganti atau ulasan buatan.
 
 Konfigurasi kontak utama berada di `assets/js/app.js`, sedangkan nomor tujuan pesan booking juga digunakan oleh `assets/js/booking.js`. Sistem motion premium (ticker racing, progress scroll, parallax, reveal, dan interaksi kartu) berada di `assets/js/motion.js`; seluruh efek menghormati preferensi `prefers-reduced-motion`.
 
@@ -52,9 +56,11 @@ Konten katalog dipisahkan agar mudah diperbarui:
 
 - `data/packages.json` — paket servis, kategori, isi paket, dan harga.
 - `data/services.json` — layanan satuan, deskripsi, dan harga.
-- `data/testimonials.json` — data testimoni statis; saat ini berupa array kosong.
+- `data/testimonials.json` — disiapkan untuk testimoni pelanggan terverifikasi; saat ini tetap berupa array kosong.
 
 Gunakan ID unik, pertahankan struktur JSON yang valid, dan tulis harga sebagai angka tanpa `Rp` atau pemisah ribuan. Setelah memperbarui data, uji halaman Paket, Layanan, dan Booking.
+
+Katalog saat ini menggunakan **Harga Launching** dari price list terbaru dan berlaku sampai pembaruan berikutnya. Harga dapat disesuaikan mengikuti pasar, kondisi motor, serta tingkat kesulitan pengerjaan. Durasi paket tidak menggunakan angka tetap karena mengikuti antrean bengkel dan hasil pemeriksaan motor.
 
 ## Pembayaran
 
