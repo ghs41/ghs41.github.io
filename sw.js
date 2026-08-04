@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'ghs41-';
-const CACHE_VERSION = 'static-2026-08-04-v9';
+const CACHE_VERSION = 'static-2026-08-04-v10';
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`;
 const OFFLINE_FALLBACK = './404.html';
 
@@ -15,7 +15,7 @@ const PRECACHE_URLS = Object.freeze([
   './kontak.html',
   './404.html',
   './manifest.webmanifest',
-  './assets/css/site.min.css?v=20260804-4',
+  './assets/css/site.min.css?v=20260804-5',
   './assets/js/app.min.js?v=20260804-4',
   './assets/js/packages.min.js?v=20260804-4',
   './assets/js/booking.min.js?v=20260804-4',

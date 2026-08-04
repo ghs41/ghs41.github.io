@@ -79,6 +79,10 @@
   display: none;
 }
 
+#booking-form {
+  scroll-margin-top: 112px;
+}
+
 .js .floating-wa {
   opacity: 0;
   pointer-events: none;
@@ -351,6 +355,10 @@ html.input-modality-ready.keyboard-navigation .skip-link:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .hero-utility a {
+    font-size: 10px;
+  }
+
   .hero-media {
     position: absolute;
     inset: 0;
@@ -375,6 +383,14 @@ html.input-modality-ready.keyboard-navigation .skip-link:focus-visible {
     font-size: 12px;
   }
 
+}
+
+@media (pointer: coarse) {
+  .booking-form input:not([type="checkbox"]),
+  .booking-form select,
+  .booking-form textarea {
+    font-size: 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
