@@ -79,7 +79,7 @@ Pembayaran dilakukan langsung di bengkel sesuai kebijakan bengkel setelah kebutu
 - **Network-first** untuk halaman HTML dan JSON agar informasi serta harga terbaru diprioritaskan saat online.
 - **Stale-while-revalidate** untuk CSS, JavaScript, gambar, dan manifest lokal.
 - Permintaan lintas domain seperti WhatsApp, Google Maps, dan Google Fonts tidak disimpan.
-- URL dengan query string tidak dimasukkan ke cache sehingga data booking tidak menjadi data cache.
+- Query string hanya dicache jika tercantum eksplisit di `PRECACHE_URLS` sebagai versi aset; query navigasi dan data booking tidak disimpan dinamis.
 - Cache GHS 41 versi lama dihapus ketika service worker baru aktif.
 
 Naikkan `CACHE_VERSION` di `sw.js` setiap kali mengubah halaman, aset, atau data yang perlu segera diperbarui pada perangkat pelanggan.

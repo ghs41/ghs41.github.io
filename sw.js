@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'ghs41-';
-const CACHE_VERSION = 'static-2026-08-04-v5';
+const CACHE_VERSION = 'static-2026-08-04-v6';
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`;
 const OFFLINE_FALLBACK = './404.html';
 
@@ -16,11 +16,11 @@ const PRECACHE_URLS = Object.freeze([
   './404.html',
   './manifest.webmanifest',
   './assets/css/style.css',
-  './assets/css/atelier-final.css',
+  './assets/css/atelier-final.css?v=20260804-2',
   './assets/js/app.js',
   './assets/js/packages.js',
   './assets/js/booking.js',
-  './assets/js/motion.js',
+  './assets/js/motion.js?v=20260804-2',
   './data/packages.json',
   './data/services.json',
   './data/testimonials.json',
@@ -125,7 +125,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (isStaticAsset && !url.search) {
+  if (isStaticAsset) {
     event.respondWith(staleWhileRevalidate(request, event));
   }
 });
