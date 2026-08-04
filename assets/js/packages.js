@@ -278,11 +278,6 @@
     const visibleDetails = item.includes.slice(0, 6);
     const remaining = item.includes.length - visibleDetails.length;
     const details = visibleDetails.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('');
-    const completeDetails = item.includes.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('');
-    const note = [...item.notes, item.eligibility].filter(Boolean).map((text) => `<p>${escapeHtml(text)}</p>`).join('');
-    const examples = item.examples.length
-      ? `<div class="package-terms"><p><strong>Contoh motor:</strong> ${escapeHtml(item.examples.join(', '))}</p></div>`
-      : '';
     const duration = item.duration
       ? `<div class="package-terms package-duration"><p><strong>Estimasi durasi:</strong> ${escapeHtml(item.duration)}</p></div>`
       : '';
@@ -300,11 +295,8 @@
           <div><p>${escapeHtml(item.type)}</p><h3>${escapeHtml(item.title)}</h3><span>${escapeHtml(item.capacity)}</span></div>
         </div>
         <ul>${details}${remaining > 0 ? `<li class="package-more">+ ${remaining} rincian layanan lainnya</li>` : ''}</ul>
-        <details class="package-details">
+        <details class="package-details" data-package-id="${escapeHtml(item.id)}">
           <summary>Rincian lengkap paket</summary>
-          ${examples}
-          <ul>${completeDetails}</ul>
-          <div class="package-terms">${note}</div>
         </details>
         ${duration}
         <div class="package-tier-prices" role="group" aria-label="Pilihan harga berdasarkan jenis oli">
@@ -319,6 +311,24 @@
           </button>
         </div>
       </article>`;
+  }
+
+  function populatePackageDetails(details) {
+    if (!(details instanceof HTMLDetailsElement) || details.dataset.detailsReady === 'true') return;
+    const item = packages.find((entry) => entry.id === details.dataset.packageId);
+    if (!item) return;
+
+    const examples = item.examples.length
+      ? `<div class="package-terms"><p><strong>Contoh motor:</strong> ${escapeHtml(item.examples.join(', '))}</p></div>`
+      : '';
+    const completeDetails = item.includes.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('');
+    const note = [...item.notes, item.eligibility]
+      .filter(Boolean)
+      .map((text) => `<p>${escapeHtml(text)}</p>`)
+      .join('');
+
+    details.insertAdjacentHTML('beforeend', `${examples}<ul>${completeDetails}</ul><div class="package-terms">${note}</div>`);
+    details.dataset.detailsReady = 'true';
   }
 
   function serviceTemplate(item, index) {
@@ -502,6 +512,9 @@
 
   document.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
+    const packageSummary = event.target.closest('.package-details > summary');
+    if (packageSummary) populatePackageDetails(packageSummary.parentElement);
+
     const filterButton = event.target.closest('.filter-btn[data-filter]');
     if (filterButton) {
       applyFilter(filterButton.dataset.filter);
@@ -510,6 +523,13 @@
     const chooseButton = event.target.closest('.choose-package[data-id]');
     if (chooseButton) selectPackage(chooseButton.dataset.id, chooseButton);
   });
+
+  packageGrid?.addEventListener('toggle', (event) => {
+    const details = event.target;
+    if (details instanceof HTMLDetailsElement && details.open && details.matches('.package-details')) {
+      populatePackageDetails(details);
+    }
+  }, true);
 
   Object.assign(catalog, { packages, services, oilTiers, oilPremiumUpgrades, sparkPlugAddons, terms, excludedParts, durationPolicy, priceValidity, priceLabel, customerNotice, modificationGuidance, oilUpgradeNotes, sparkPlugNote, getSelection, filter: applyFilter, selectPackage });
   window.GHS41Catalog = catalog;

@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'ghs41-';
-const CACHE_VERSION = 'static-2026-08-04-v6';
+const CACHE_VERSION = 'static-2026-08-04-v8';
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`;
 const OFFLINE_FALLBACK = './404.html';
 
@@ -15,19 +15,25 @@ const PRECACHE_URLS = Object.freeze([
   './kontak.html',
   './404.html',
   './manifest.webmanifest',
-  './assets/css/style.css',
-  './assets/css/atelier-final.css?v=20260804-2',
-  './assets/js/app.js',
-  './assets/js/packages.js',
-  './assets/js/booking.js',
-  './assets/js/motion.js?v=20260804-2',
+  './assets/css/site.min.css?v=20260804-4',
+  './assets/js/app.min.js?v=20260804-4',
+  './assets/js/packages.min.js?v=20260804-4',
+  './assets/js/booking.min.js?v=20260804-4',
+  './assets/js/motion.min.js?v=20260804-4',
   './data/packages.json',
   './data/services.json',
   './data/testimonials.json',
   './assets/images/favicon.png',
-  './assets/images/logo-ghs41-optimized.png',
+  './assets/images/favicon-48.png',
+  './assets/images/apple-touch-icon.png',
+  './assets/images/logo-ghs41-display.png',
   './assets/images/hero-workshop-premium.jpg',
+  './assets/images/hero-workshop-premium.webp',
+  './assets/images/hero-workshop-premium-720.webp',
+  './assets/images/hero-workshop-premium-mobile.webp',
   './assets/images/booking-workshop-premium.jpg',
+  './assets/images/booking-workshop-premium.webp',
+  './assets/images/booking-workshop-premium-720.webp',
   './assets/images/og-cover.jpg'
 ]);
 

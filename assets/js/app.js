@@ -47,6 +47,39 @@
   Object.assign(app, { config: CONFIG, formatRupiah, showToast });
   window.GHS41 = app;
 
+  function initDeferredStyles() {
+    document.querySelectorAll('link[data-deferred-style]').forEach((stylesheet) => {
+      stylesheet.media = 'all';
+      stylesheet.removeAttribute('data-deferred-style');
+    });
+  }
+
+  function initInputModality() {
+    const keyboardClass = 'keyboard-navigation';
+    root.classList.add('input-modality-ready');
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') root.classList.add(keyboardClass);
+    }, true);
+
+    const usePointerModality = () => {
+      root.classList.remove(keyboardClass);
+      if (document.activeElement?.classList.contains('skip-link')) {
+        document.activeElement.blur();
+      }
+    };
+
+    document.addEventListener('pointerdown', usePointerModality, { capture: true, passive: true });
+    document.addEventListener('touchstart', usePointerModality, { capture: true, passive: true });
+
+    document.querySelectorAll('.skip-link[href^="#"]').forEach((skipLink) => {
+      skipLink.addEventListener('click', () => {
+        const target = document.querySelector(skipLink.getAttribute('href'));
+        window.requestAnimationFrame(() => target?.focus({ preventScroll: true }));
+      });
+    });
+  }
+
   function initNavigation() {
     const toggle = document.querySelector('.nav-toggle');
     if (!toggle) return;
@@ -240,6 +273,18 @@
     });
   }
 
+  function initFloatingWhatsappVisibility() {
+    const floatingButton = document.querySelector('.floating-wa');
+    const intro = document.querySelector('main > .hero, main > .page-hero');
+    if (!floatingButton || !intro || !('IntersectionObserver' in window)) return;
+
+    floatingButton.classList.add('is-hero-aware');
+    const observer = new IntersectionObserver(([entry]) => {
+      floatingButton.classList.toggle('is-visible', !entry.isIntersecting);
+    }, { threshold: 0.05 });
+    observer.observe(intro);
+  }
+
   function initServiceWorker() {
     const canRegister = 'serviceWorker' in navigator
       && (window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1')
@@ -255,9 +300,12 @@
     }, { once: true });
   }
 
+  initDeferredStyles();
+  initInputModality();
   initNavigation();
   initYear();
   initWhatsappLinks();
+  initFloatingWhatsappVisibility();
   observeReveals();
   initServiceWorker();
 

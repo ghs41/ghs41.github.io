@@ -20,6 +20,18 @@
   height: auto;
 }
 
+.hero-media picture,
+.services-media picture {
+  display: contents;
+}
+
+.page-hero-visual picture,
+.booking-info picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .performance-ticker {
   border-color: rgba(230, 234, 239, .16);
   background: linear-gradient(90deg, #07090a, #101316 52%, #07090a);
@@ -65,6 +77,46 @@
 
 .page-booking .floating-wa {
   display: none;
+}
+
+.js .floating-wa {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.floating-wa.is-hero-aware {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity .24s ease, transform .24s ease, background .2s ease;
+}
+
+.floating-wa.is-hero-aware.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.floating-wa.is-hero-aware.is-visible:hover {
+  transform: translateY(-3px);
+}
+
+/* Safari may restore anchor focus after touch/back navigation. Only expose the
+   skip link after an actual Tab keypress, while keeping it first in tab order. */
+.skip-link:focus,
+.skip-link:focus-visible {
+  transition: none;
+}
+
+.input-modality-ready .skip-link:focus,
+.input-modality-ready .skip-link:focus-visible {
+  transform: translateY(-140%);
+}
+
+html.input-modality-ready.keyboard-navigation .skip-link:focus,
+html.input-modality-ready.keyboard-navigation .skip-link:focus-visible {
+  transform: translateY(0) !important;
+  transition: none;
 }
 
 .js .reveal.package-card.motion-card.visible.is-tilting {
@@ -131,6 +183,34 @@
   100% { transform: scale(1.06); filter: saturate(.9) contrast(1.08); }
 }
 
+@media (max-width: 1100px) {
+  .booking-section {
+    overflow: clip;
+  }
+
+  .booking-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+
+  .booking-info {
+    position: static;
+  }
+
+  .booking-info > * {
+    max-width: 760px;
+  }
+
+  .booking-form {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .floating-wa {
+    display: none;
+  }
+}
+
 @media (max-width: 920px) {
   :root {
     --mobile-sticky-offset: calc(max(8px, env(safe-area-inset-top)) + 74px);
@@ -152,8 +232,67 @@
     backdrop-filter: none;
   }
 
+  .main-nav {
+    backdrop-filter: none;
+  }
+
   .filter-bar {
     top: var(--mobile-sticky-offset);
+    background: #050708;
+    backdrop-filter: none;
+  }
+
+  /* Mobile Safari compositor guard: preserve lightweight reveal/hover motion,
+     but remove the expensive full-viewport and filtered layers that can build
+     up during a long continuous scroll. */
+  body::before {
+    display: none;
+  }
+
+  .service-console,
+  .service-row {
+    backdrop-filter: none;
+  }
+
+  .brand img,
+  .hero-media img,
+  .page-hero-visual img,
+  .services-media img,
+  .booking-image {
+    filter: none;
+  }
+
+  .motion-lite .hero-media,
+  .motion-lite .hero-media img,
+  .motion-lite .page-hero-visual img,
+  .motion-lite .booking-image img,
+  .motion-lite .services-media img,
+  .motion-lite .ticker-track {
+    will-change: auto;
+  }
+
+  .motion-lite .site-header.is-scrolled::after,
+  .motion-lite .nav-status-dot,
+  .motion-lite .hero-media img,
+  .motion-lite .page-hero-visual::after,
+  .motion-lite .booking-image::after,
+  .motion-lite .ticker-track,
+  .motion-lite .motion-scroll-cue i::after,
+  .motion-lite .process-rail::before,
+  .motion-lite .about-mark > span,
+  .motion-lite .hero-frame-rail::after,
+  .motion-lite .floating-wa::after {
+    animation: none !important;
+  }
+
+  .motion-lite .page-hero-visual::after,
+  .motion-lite .booking-image::after {
+    display: none;
+  }
+
+  .motion-lite .reveal {
+    transform: none;
+    transition: opacity .28s ease;
   }
 
   .floating-wa {
@@ -236,12 +375,6 @@
     font-size: 12px;
   }
 
-}
-
-@media (max-width: 360px) {
-  .hero-utility {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

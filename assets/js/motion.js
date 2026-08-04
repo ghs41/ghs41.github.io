@@ -15,6 +15,8 @@
   const numberFrames = new Map();
   const numberOriginals = new WeakMap();
   const magneticReturnAnimations = new WeakMap();
+  const revealAnimations = new WeakMap();
+  const filterAnimations = new WeakMap();
 
   let depthImages = [];
   let sections = [];
@@ -30,8 +32,12 @@
     return !reduceMotion.matches;
   }
 
-  function interactiveMotionAllowed() {
+  function richMotionAllowed() {
     return motionAllowed() && finePointer.matches;
+  }
+
+  function interactiveMotionAllowed() {
+    return richMotionAllowed();
   }
 
   function setStyleProperty(element, property, value) {
@@ -120,7 +126,7 @@
   }
 
   function playHeroFrameIntro() {
-    if (!motionAllowed() || !supportsAnimation) return;
+    if (!richMotionAllowed() || !supportsAnimation) return;
     const frame = document.querySelector('.hero-frame');
     if (!frame || frame.dataset.motionPlayed === 'true') return;
     frame.dataset.motionPlayed = 'true';
@@ -154,7 +160,7 @@
   }
 
   function playSectionCue(section) {
-    if (!motionAllowed() || !supportsAnimation || section.dataset.motionCuePlayed === 'true') return;
+    if (!richMotionAllowed() || !supportsAnimation || section.dataset.motionCuePlayed === 'true') return;
     const chrome = section.querySelector(':scope > .section-chrome');
     if (!chrome) return;
     section.dataset.motionCuePlayed = 'true';
@@ -187,8 +193,10 @@
   }
 
   function playMaskReveal(element) {
-    if (!motionAllowed() || !supportsAnimation || element.dataset.motionRevealed === 'true') return;
+    if (!richMotionAllowed() || !supportsAnimation || element.dataset.motionRevealed === 'true') return;
     element.dataset.motionRevealed = 'true';
+
+    revealAnimations.get(element)?.cancel();
 
     const isCard = element.matches('.package-card, .service-row, .contact-card, .value-card, .principle-card');
     const animation = element.animate([
@@ -208,9 +216,13 @@
       easing: 'cubic-bezier(.16, 1, .3, 1)',
       fill: 'both'
     });
+    revealAnimations.set(element, animation);
 
     animation.finished
-      .then(() => animation.cancel())
+      .then(() => {
+        animation.cancel();
+        if (revealAnimations.get(element) === animation) revealAnimations.delete(element);
+      })
       .catch(() => {});
   }
 
@@ -226,6 +238,11 @@
     : null;
 
   function registerPremiumReveals(scope = document) {
+    // The base app already provides lightweight opacity/translate reveals.
+    // Avoid duplicating them with blur + clip-path WAAPI layers on touch devices,
+    // where long pages can exhaust Safari's compositor memory while scrolling.
+    if (!richMotionAllowed()) return;
+
     const candidates = [];
     if (scope instanceof Element && scope.matches('.reveal')) candidates.push(scope);
     scope.querySelectorAll?.('.reveal').forEach((element) => candidates.push(element));
@@ -274,6 +291,8 @@
   }
 
   function registerMotionCards(scope = document) {
+    if (!finePointer.matches) return;
+
     const selector = [
       '.package-card',
       '.service-console',
@@ -312,6 +331,8 @@
   }
 
   function registerMagneticElements(scope = document) {
+    if (!finePointer.matches) return;
+
     const selector = '.btn, .nav-cta, .choose-package, .hero-utility a, .section-bridge a';
     scope.querySelectorAll?.(selector).forEach((element) => {
       if (element.dataset.magneticBound === 'true') return;
@@ -382,7 +403,7 @@
   }
 
   function countNumber(element) {
-    if (!motionAllowed() || countedElements.has(element)) return;
+    if (!richMotionAllowed() || countedElements.has(element)) return;
     const parsed = parseCountableText(element);
     if (!parsed) return;
 
@@ -397,7 +418,7 @@
     const startTime = performance.now();
 
     const step = (time) => {
-      if (!motionAllowed() || !element.isConnected) {
+      if (!richMotionAllowed() || !element.isConnected) {
         element.textContent = parsed.original;
         element.classList.remove('motion-counting');
         if (!hadAriaLabel) element.removeAttribute('aria-label');
@@ -438,9 +459,11 @@
     : null;
 
   function registerCountableNumbers(scope = document) {
+    if (!richMotionAllowed()) return;
+
     // Never tween prices: transient values can look like a real, incorrect quote.
     // Count-up motion is reserved for decorative, non-transactional figures.
-    const selector = '[data-motion-count], .about-mark > span';
+    const selector = '[data-motion-count]';
 
     scope.querySelectorAll?.(selector).forEach((element) => {
       if (element.dataset.countBound === 'true' || !parseCountableText(element)) return;
@@ -585,22 +608,31 @@
   }
 
   function animateFilteredCards(event) {
-    if (!motionAllowed() || !supportsAnimation) return;
+    if (!richMotionAllowed() || !supportsAnimation) return;
     const filter = event.target.closest?.('.filter-btn[data-filter]');
     if (!filter) return;
 
     window.requestAnimationFrame(() => {
       document.querySelectorAll('#package-grid .package-card:not([hidden])').forEach((card, index) => {
+        revealObserver?.unobserve(card);
+        card.classList.add('visible');
+        card.dataset.motionRevealed = 'true';
+        revealAnimations.get(card)?.cancel();
+        filterAnimations.get(card)?.cancel();
+
         const animation = card.animate([
-          { opacity: 0, clipPath: 'inset(0 0 16% 0 round 5px)', filter: 'blur(5px)' },
-          { opacity: 1, clipPath: 'inset(0 0 0% 0 round 5px)', filter: 'blur(0)' }
+          { opacity: .35, transform: 'translateY(10px)' },
+          { opacity: 1, transform: 'translateY(0)' }
         ], {
-          duration: 520,
-          delay: Math.min(index, 8) * 46,
+          duration: 360,
           easing: 'cubic-bezier(.16, 1, .3, 1)',
           fill: 'both'
         });
-        animation.finished.then(() => animation.cancel()).catch(() => {});
+        filterAnimations.set(card, animation);
+        animation.finished.then(() => {
+          animation.cancel();
+          if (filterAnimations.get(card) === animation) filterAnimations.delete(card);
+        }).catch(() => {});
       });
     });
   }
@@ -633,15 +665,21 @@
 
   function setMotionState() {
     const reduced = reduceMotion.matches;
+    const lightweight = !reduced && !finePointer.matches;
     root.classList.toggle('motion-reduced', reduced);
     root.classList.toggle('motion-enabled', !reduced);
+    root.classList.toggle('motion-lite', lightweight);
 
-    if (reduced) {
+    if (reduced || lightweight) {
       resetInteractiveMotion();
       resetSectionMotion();
       restoreCountingNumbers();
-      document.querySelectorAll('.reveal').forEach((element) => element.classList.add('visible'));
-    } else {
+      if (reduced) {
+        document.querySelectorAll('.reveal').forEach((element) => element.classList.add('visible'));
+      }
+    }
+
+    if (!reduced) {
       registerMotionCards();
       registerMagneticElements();
       registerPremiumReveals();
@@ -680,10 +718,7 @@
     requestMotionFrame();
   }, { passive: true });
   reduceMotion.addEventListener?.('change', setMotionState);
-  finePointer.addEventListener?.('change', () => {
-    if (!finePointer.matches) resetInteractiveMotion();
-    requestMotionFrame();
-  });
+  finePointer.addEventListener?.('change', setMotionState);
 
   window.requestAnimationFrame(() => {
     root.classList.add('motion-ready');

@@ -16,15 +16,16 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://ghs41.github.io/paket.html">
   <title>Paket Servis Motor | GHS 41</title>
-  <link rel="icon" type="image/png" href="assets/images/favicon.png">
-  <link rel="apple-touch-icon" href="assets/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/images/favicon-48.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" media="print" data-deferred-style>
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap"></noscript>
   <script>document.documentElement.classList.add('js');</script>
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/atelier-final.css?v=20260804-2">
+  <link rel="stylesheet" href="assets/css/site.min.css?v=20260804-4">
 </head>
 <body class="page page-packages" data-page="packages">
   <a class="skip-link" href="#main">Lewati ke isi utama</a>
@@ -32,7 +33,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html" aria-label="GHS 41 — kembali ke beranda">
-        <img src="assets/images/logo-ghs41-optimized.png" width="1600" height="289" fetchpriority="high" alt="GHS 41 — Aman, Enjoy, Santuy">
+        <img src="assets/images/logo-ghs41-display.png" width="640" height="116" fetchpriority="high" alt="GHS 41 — Aman, Enjoy, Santuy">
       </a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Buka menu navigasi">
@@ -51,7 +52,7 @@
     </div>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <section class="hero section-dark" aria-labelledby="hero-title" data-motion-section="hero" data-section-index="00">
       <div class="hero-frame" aria-hidden="true">
         <span class="hero-frame-corner hero-frame-corner-tl"></span>
@@ -61,7 +62,7 @@
         <span class="hero-frame-rail"></span>
       </div>
       <div class="hero-media" aria-hidden="true">
-        <img src="assets/images/hero-workshop-premium.jpg" width="1736" height="906" alt="" fetchpriority="high">
+        <picture><source media="(max-width: 700px)" srcset="assets/images/hero-workshop-premium-720.webp" type="image/webp"><source srcset="assets/images/hero-workshop-premium.webp" type="image/webp"><img src="assets/images/hero-workshop-premium.jpg" width="1736" height="906" alt="" fetchpriority="high"></picture>
       </div>
 
       <div class="container hero-layout">
@@ -208,7 +209,7 @@
   <footer class="site-footer">
     <div class="container footer-main">
       <div class="footer-brand">
-        <img src="assets/images/logo-ghs41-optimized.png" width="1600" height="289" alt="GHS 41">
+        <img src="assets/images/logo-ghs41-display.png" width="640" height="116" alt="GHS 41">
         <p>Aman, Enjoy, Santuy</p>
       </div>
       <nav class="footer-links" aria-label="Navigasi footer">
@@ -240,8 +241,8 @@
   </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="assets/js/app.js" defer></script>
-  <script src="assets/js/packages.js" defer></script>
-  <script src="assets/js/motion.js?v=20260804-2" defer></script>
+  <script src="assets/js/app.min.js?v=20260804-4" defer></script>
+  <script src="assets/js/packages.min.js?v=20260804-4" defer></script>
+  <script src="assets/js/motion.min.js?v=20260804-4" defer></script>
 </body>
 </html>
