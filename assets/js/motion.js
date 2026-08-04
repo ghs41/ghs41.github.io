@@ -28,6 +28,19 @@
   let pointerY = window.innerHeight / 2;
   let activeSection = null;
 
+  // Touch devices use the base app's lightweight opacity reveals. Stop here
+  // before binding desktop-only observers and scroll/pointer machinery: this
+  // avoids long compositor/main-thread tasks on iOS Safari while retaining the
+  // static performance ticker and premium visual system.
+  if (!finePointer.matches) {
+    const reduced = reduceMotion.matches;
+    root.classList.toggle('motion-reduced', reduced);
+    root.classList.toggle('motion-enabled', !reduced);
+    root.classList.add('motion-lite', 'motion-ready');
+    createPerformanceTicker();
+    return;
+  }
+
   function motionAllowed() {
     return !reduceMotion.matches;
   }
