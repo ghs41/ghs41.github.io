@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'ghs41-';
-const CACHE_VERSION = 'static-2026-08-04-v8';
+const CACHE_VERSION = 'static-2026-08-04-v9';
 const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`;
 const OFFLINE_FALLBACK = './404.html';
 
@@ -19,7 +19,7 @@ const PRECACHE_URLS = Object.freeze([
   './assets/js/app.min.js?v=20260804-4',
   './assets/js/packages.min.js?v=20260804-4',
   './assets/js/booking.min.js?v=20260804-4',
-  './assets/js/motion.min.js?v=20260804-4',
+  './assets/js/motion.min.js?v=20260804-5',
   './data/packages.json',
   './data/services.json',
   './data/testimonials.json',
