@@ -34,6 +34,11 @@
     return motionAllowed() && finePointer.matches;
   }
 
+  function setStyleProperty(element, property, value) {
+    if (!element || element.style.getPropertyValue(property) === value) return;
+    element.style.setProperty(property, value);
+  }
+
   function createScrollProgress() {
     if (document.querySelector('.scroll-progress')) return;
 
@@ -123,7 +128,7 @@
     frame.querySelectorAll('.hero-frame-corner').forEach((corner, index) => {
       const animation = corner.animate([
         { opacity: 0, transform: 'scale(.55)' },
-        { opacity: 1, transform: 'scale(1)' }
+        { opacity: .52, transform: 'scale(1)' }
       ], {
         duration: 620,
         delay: 180 + index * 58,
@@ -433,14 +438,9 @@
     : null;
 
   function registerCountableNumbers(scope = document) {
-    const selector = [
-      '.service-console strong',
-      '.tier-price strong',
-      '.service-row > strong',
-      '.package-footer > strong',
-      '.catalog-option-card strong',
-      '.about-mark > span'
-    ].join(',');
+    // Never tween prices: transient values can look like a real, incorrect quote.
+    // Count-up motion is reserved for decorative, non-transactional figures.
+    const selector = '[data-motion-count], .about-mark > span';
 
     scope.querySelectorAll?.(selector).forEach((element) => {
       if (element.dataset.countBound === 'true' || !parseCountableText(element)) return;
@@ -454,15 +454,17 @@
     pointerFrameRequested = false;
     if (!interactiveMotionAllowed()) return;
 
-    root.style.setProperty('--pointer-x', `${pointerX.toFixed(1)}px`);
-    root.style.setProperty('--pointer-y', `${pointerY.toFixed(1)}px`);
-    root.style.setProperty('--pointer-x-ratio', (pointerX / Math.max(window.innerWidth, 1)).toFixed(4));
-    root.style.setProperty('--pointer-y-ratio', (pointerY / Math.max(window.innerHeight, 1)).toFixed(4));
+    const target = pointerTarget?.isConnected ? pointerTarget : null;
+    const bounds = target?.getBoundingClientRect();
 
-    if (!pointerTarget?.isConnected) return;
-    const bounds = pointerTarget.getBoundingClientRect();
-    pointerTarget.style.setProperty('--spot-x', `${(pointerX - bounds.left).toFixed(1)}px`);
-    pointerTarget.style.setProperty('--spot-y', `${(pointerY - bounds.top).toFixed(1)}px`);
+    setStyleProperty(root, '--pointer-x', `${pointerX.toFixed(1)}px`);
+    setStyleProperty(root, '--pointer-y', `${pointerY.toFixed(1)}px`);
+    setStyleProperty(root, '--pointer-x-ratio', (pointerX / Math.max(window.innerWidth, 1)).toFixed(4));
+    setStyleProperty(root, '--pointer-y-ratio', (pointerY / Math.max(window.innerHeight, 1)).toFixed(4));
+
+    if (!target || !bounds) return;
+    setStyleProperty(target, '--spot-x', `${(pointerX - bounds.left).toFixed(1)}px`);
+    setStyleProperty(target, '--spot-y', `${(pointerY - bounds.top).toFixed(1)}px`);
   }
 
   function requestPointerFrame() {
@@ -485,9 +487,10 @@
     }, { passive: true });
   }
 
-  function updateSectionProgress(viewportHeight) {
+  function measureSectionProgress(viewportHeight) {
     let nearest = null;
     let nearestDistance = Number.POSITIVE_INFINITY;
+    const measurements = [];
 
     sections.forEach((section, index) => {
       if (!section.isConnected) return;
@@ -498,8 +501,11 @@
       const progress = Math.min(Math.max((viewportHeight - bounds.top) / (viewportHeight + bounds.height), 0), 1);
       const center = bounds.top + bounds.height / 2;
       const depth = Math.min(Math.max((center - viewportHeight / 2) / viewportHeight, -1), 1);
-      section.style.setProperty('--section-progress', progress.toFixed(4));
-      section.style.setProperty('--section-depth', depth.toFixed(4));
+      measurements.push({
+        section,
+        progress: progress.toFixed(4),
+        depth: depth.toFixed(4)
+      });
 
       const distance = Math.abs(center - viewportHeight / 2);
       if (distance < nearestDistance) {
@@ -508,13 +514,33 @@
       }
     });
 
+    return { measurements, nearest };
+  }
+
+  function applySectionProgress({ measurements, nearest }) {
+    measurements.forEach(({ section, progress, depth }) => {
+      setStyleProperty(section, '--section-progress', progress);
+      setStyleProperty(section, '--section-depth', depth);
+    });
+
     if (!nearest || nearest.section === activeSection) return;
     activeSection?.classList.remove('motion-section-active');
     activeSection = nearest.section;
     activeSection.classList.add('motion-section-active');
     playSectionCue(activeSection);
-    root.style.setProperty('--active-section', String(nearest.index + 1));
+    setStyleProperty(root, '--active-section', String(nearest.index + 1));
     root.dataset.activeMotionSection = activeSection.dataset.motionSection || String(nearest.index + 1);
+  }
+
+  function resetSectionMotion() {
+    sections.forEach((section) => {
+      section.style.removeProperty('--section-progress');
+      section.style.removeProperty('--section-depth');
+      section.classList.remove('motion-section-active');
+    });
+    activeSection = null;
+    root.style.removeProperty('--active-section');
+    delete root.dataset.activeMotionSection;
   }
 
   function updateMotionFrame() {
@@ -522,25 +548,33 @@
     const viewportHeight = Math.max(window.innerHeight, 1);
     const maximum = Math.max(document.documentElement.scrollHeight - viewportHeight, 1);
     const progress = Math.min(Math.max(window.scrollY / maximum, 0), 1);
-    root.style.setProperty('--scroll-progress', progress.toFixed(4));
-    root.style.setProperty('--viewport-progress', progress.toFixed(4));
-
+    const interactive = interactiveMotionAllowed();
     const header = document.querySelector('.site-header');
+    const heroMedia = interactive ? document.querySelector('.hero-media') : null;
+    const sectionState = interactive ? measureSectionProgress(viewportHeight) : null;
+    const imageStates = interactive
+      ? depthImages.flatMap((image) => {
+          if (!image.isConnected) return [];
+          const bounds = image.getBoundingClientRect();
+          if (bounds.bottom < -120 || bounds.top > viewportHeight + 120) return [];
+          const offset = ((bounds.top + bounds.height / 2) - viewportHeight / 2) * -0.032;
+          return [{ image, value: `${Math.max(-22, Math.min(22, offset)).toFixed(1)}px` }];
+        })
+      : [];
+
+    setStyleProperty(root, '--scroll-progress', progress.toFixed(4));
+    setStyleProperty(root, '--viewport-progress', progress.toFixed(4));
     header?.classList.toggle('is-scrolled', window.scrollY > 18);
-    updateSectionProgress(viewportHeight);
+    if (sectionState) applySectionProgress(sectionState);
 
-    if (!interactiveMotionAllowed()) return;
+    if (!interactive) return;
 
-    const heroMedia = document.querySelector('.hero-media');
     if (heroMedia) {
-      heroMedia.style.setProperty('--parallax-y', `${Math.min(window.scrollY * 0.088, 68).toFixed(1)}px`);
+      setStyleProperty(heroMedia, '--parallax-y', `${Math.min(window.scrollY * 0.088, 68).toFixed(1)}px`);
     }
 
-    depthImages.forEach((image) => {
-      const bounds = image.getBoundingClientRect();
-      if (bounds.bottom < -120 || bounds.top > viewportHeight + 120) return;
-      const offset = ((bounds.top + bounds.height / 2) - viewportHeight / 2) * -0.032;
-      image.style.setProperty('--parallax-y', `${Math.max(-22, Math.min(22, offset)).toFixed(1)}px`);
+    imageStates.forEach(({ image, value }) => {
+      setStyleProperty(image, '--parallax-y', value);
     });
   }
 
@@ -604,6 +638,7 @@
 
     if (reduced) {
       resetInteractiveMotion();
+      resetSectionMotion();
       restoreCountingNumbers();
       document.querySelectorAll('.reveal').forEach((element) => element.classList.add('visible'));
     } else {

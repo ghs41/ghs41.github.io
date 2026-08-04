@@ -4,6 +4,12 @@
   position: relative;
 }
 
+.packages-section {
+  /* `hidden` creates a scroll container and breaks the sticky filter rail. */
+  overflow: visible;
+  overflow: clip;
+}
+
 .hero h1,
 .page-hero-copy h1,
 .section h2 {
@@ -84,6 +90,11 @@
   font-size: clamp(29px, 2.7vw, 41px);
 }
 
+.tier-price strong {
+  /* "Mulai" may wrap above the amount instead of colliding with its sibling tier. */
+  white-space: normal;
+}
+
 .package-details summary,
 .package-heading span,
 .package-footer > span,
@@ -121,14 +132,39 @@
 }
 
 @media (max-width: 920px) {
+  :root {
+    --mobile-sticky-offset: calc(max(8px, env(safe-area-inset-top)) + 74px);
+  }
+
+  html {
+    scroll-padding-top: calc(var(--mobile-sticky-offset) + 12px);
+  }
+
+  .site-header,
+  .site-header.is-scrolled {
+    padding-top: max(8px, env(safe-area-inset-top));
+    background: #040607;
+  }
+
   .header-inner,
   .site-header.is-scrolled .header-inner {
     overflow: visible;
     backdrop-filter: none;
   }
 
+  .filter-bar {
+    top: var(--mobile-sticky-offset);
+  }
+
   .floating-wa {
     display: none;
+  }
+
+  .booking-form input:not([type="checkbox"]),
+  .booking-form select,
+  .booking-form textarea {
+    /* Prevent iOS Safari from zooming the viewport when a field receives focus. */
+    font-size: 16px;
   }
 
   .page-hero-visual img {
@@ -136,7 +172,46 @@
   }
 }
 
+@media (max-width: 430px) {
+  .package-tier-prices {
+    grid-template-columns: 1fr;
+  }
+
+  .tier-price,
+  .package-card:first-child .tier-price {
+    min-height: 68px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .tier-price small {
+    white-space: normal;
+  }
+
+  .tier-price strong,
+  .package-card:first-child .tier-price strong {
+    font-size: clamp(22px, 7vw, 28px);
+  }
+}
+
 @media (max-width: 700px) {
+  .brand img {
+    width: clamp(166px, 46vw, 184px);
+  }
+
+  .hero,
+  .hero-layout {
+    min-height: 930px;
+  }
+
+  .hero h1 {
+    font-size: clamp(61px, 18.5vw, 82px);
+  }
+
+  .hero-utility {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .hero-media {
     position: absolute;
     inset: 0;
@@ -163,9 +238,19 @@
 
 }
 
+@media (max-width: 360px) {
+  .hero-utility {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .motion-enabled .floating-wa::after,
   .motion-enabled .ticker-track {
     animation: none !important;
+  }
+
+  .section-rail {
+    transform: none !important;
   }
 }
